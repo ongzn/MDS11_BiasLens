@@ -241,3 +241,18 @@
   color: #777;
   border: none;
 }
+
+.model-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.model-label {
+  margin-left: 6px;
+}
+
+.model-time {
+  font-size: 0.8rem;
+  color: gray;
+}

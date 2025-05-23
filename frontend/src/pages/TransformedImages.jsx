@@ -8,6 +8,7 @@ import ImageBox from '../components/ImageBox';
 import axios from 'axios';
 import { useGlobalContext } from '../context/GlobalContext';
 import LoadingDots from '../components/LoadingDots';
+import { FaExclamationCircle } from 'react-icons/fa';
 const MAIN_ENDPOINT = import.meta.env.VITE_MAIN_ENDPOINT;
 const BIAS_ANALYSIS_URL = import.meta.env.VITE_BIAS_ANALYSIS;
 
@@ -154,7 +155,8 @@ const TransformedImages = () => {
     for (const occ of localOccupations) {
       transformedResult[occ] = [];
 
-      for (const img of originalImages) {
+      for (let i = 0; i < originalImages.length; i++) {
+        const img = originalImages[i];
         try {
           const res = await axios.post(apiUrl, {
             occupation: occ,
@@ -174,7 +176,7 @@ const TransformedImages = () => {
             original: img.url,
             transformed: transformedUrl,
             isLoading: false,
-            key: `final-${occ}-${progress[occ]}`
+            key: `final-${occ}-${i}`
           };
 
           transformedResult[occ].push(newImg);
@@ -198,39 +200,50 @@ const TransformedImages = () => {
           }));
 
         } catch (err) {
-            console.error(`❌ Failed to transform image ${img.name} for ${occ}`, err);
+          console.error(`❌ Failed to transform image ${img.name} for ${occ}`, err);
 
-            // Mark the image as failed
-            const failedImg = {
-              occupation: occ,
-              original: img.url,
-              transformed: '',
-              isLoading: false,
-              failed: true,
-              key: `failed-${occ}-${progress[occ]}`
-            };
+          const failedImg = {
+            occupation: occ,
+            original: img.url,
+            transformed: '',
+            isLoading: false,
+            failed: true,
+            key: `failed-${occ}-${i}`
+          };
 
-            setLocalTransformed(prev => {
-              const index = prev[occ].findIndex(item => item.original === img.url);
-              if (index === -1) return prev;
+          setLocalTransformed(prev => {
+            const index = prev[occ].findIndex(item => item.original === img.url);
+            if (index === -1) return prev;
 
-              const updated = [...prev[occ]];
-              updated[index] = failedImg;
+            const updated = [...prev[occ]];
+            updated[index] = failedImg;
 
-              return {
-                ...prev,
-                [occ]: updated
-              };
-            });
+            // Mark all remaining images as failed (if they haven't been handled yet)
+            for (let j = index + 1; j < updated.length; j++) {
+              if (!updated[j].transformed && updated[j].isLoading) {
+                updated[j] = {
+                  ...updated[j],
+                  isLoading: false,
+                  failed: true,
+                  key: `failed-${occ}-${j}`
+                };
+              }
+            }
 
-            setProgress(prev => ({
+            return {
               ...prev,
-              [occ]: prev[occ] + 1
-            }));
+              [occ]: updated
+            };
+          });
 
-            openModal('Image transformation failed. Please regenerate.', 'alert');
-            setIsGenerating(false);
-            return; // ⛔️ Immediately stop further transformations
+          setProgress(prev => ({
+            ...prev,
+            [occ]: originalImages.length // simulate full progress for visual consistency
+          }));
+
+          openModal(`Image failed to transform. Process halted.`, 'alert');
+          setIsGenerating(false);
+          return;
         }
       }
     }
@@ -298,16 +311,21 @@ const TransformedImages = () => {
             <div className="model-group">
               <label className="filter-title">Model</label>
               <div className="radio-options">
-                {['InstructPix2Pix', 'Img2Img', 'MagicBrush'].map(model => (
-                  <label key={model}>
+                {[
+                  { name: 'InstructPix2Pix', time: '~1s per image' },
+                  { name: 'Img2Img', time: '~2.9 min per image' },
+                  { name: 'MagicBrush', time: '~3s per image' }
+                ].map(({ name, time }) => (
+                  <label key={name} className="model-option">
                     <input
                       type="radio"
                       name="model"
-                      value={model}
-                      checked={localModel === model}
+                      value={name}
+                      checked={localModel === name}
                       onChange={(e) => setLocalModel(e.target.value)}
+                      disabled={isGenerating}
                     />
-                    {model}
+                    <span className="model-label">{name} <span className="model-time">({time})</span></span>
                   </label>
                 ))}
               </div>
@@ -322,7 +340,7 @@ const TransformedImages = () => {
                       type="checkbox"
                       checked={localOccupations.includes(occ)}
                       onChange={() => toggleOccupation(occ)}
-                      disabled={!localOccupations.includes(occ) && localOccupations.length >= 5}
+                      disabled={isGenerating || (!localOccupations.includes(occ) && localOccupations.length >= 5)}
                     />
                     {occ}
                   </label>
