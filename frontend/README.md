@@ -1,12 +1,71 @@
-# React + Vite
+# 📊 MDS11_BiasLens Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React + Vite frontend for **MDS11 BiasLens**, a final year project that analyzes demographic bias in AI-generated occupation images.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ⚙️ Project Structure
 
-## Expanding the ESLint configuration
+```bash
+frontend/
+├── public/                    # Static assets (favicon, etc.)
+├── src/
+│   ├── pages/                 # Main pages (Landing, OriginalImages, TransformedImages, Result)
+│   ├── components/            # Reusable UI components (Header, Modal, Charts, etc.)
+│   ├── context/               # Global context for app-wide state (selected attributes, images)
+│   ├── App.jsx                # Root component
+│   └── main.jsx               # App entry point
+├── .env.development           # Development environment variables (excluded from Git)
+├── .env.production            # Production environment variables (excluded from Git)
+├── tailwind.config.js        # Tailwind CSS setup
+├── vite.config.js            # Vite config
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🧪 Features
+
+- 🎛️ **Filter Selection UI**: Choose gender, age, race and number of images.
+- 📸 **Image Generation**: Generates FairFace original and transformed occupation images via backend API.
+- 📈 **Bias Analysis Result**: Visualizes demographic bias using charts (bar, pie, dumbbell, gauge).
+- 🧠 **Model Switcher**: Supports InstructPix2Pix, Kandinsky Img2Img, and MagicBrush via backend endpoints.
+- 💾 **Firebase**: Loads original images and uploads generated ones using signed URLs.
+- 💬 **Modals & Feedback**: Integrated loading states, error alerts, and confirmation dialogs.
+
+---
+
+## 🚀 Getting Started
+
+1. **Install dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. **Set environment endpoints**:  
+   Edit `.env.development` and `.env.production` with your API URLs:
+   ```
+   VITE_MAIN_ENDPOINT=http://localhost:5001
+   ```
+
+3. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+---
+
+## 📦 Deployment
+
+This frontend can be deployed to **Vercel**, **Netlify**, or any static host that supports Vite builds.
+
+```bash
+npm run build
+```
+
+Then serve the `dist/` folder using your preferred method.
+
+---
+
+## 📄 License
+
+Part of the MDS11 final year project. See the [root README](../README.md) for details.
