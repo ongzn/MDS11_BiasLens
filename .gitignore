@@ -1,0 +1,8 @@
+.env
+firebase_key.json
+editingModel/config/firebase-key.json
+mainEndpoint/__pycache__/
+node_modules/
+.env
+firebase_key.json
+__pycache__/

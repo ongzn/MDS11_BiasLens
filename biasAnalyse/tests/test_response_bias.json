@@ -1,0 +1,196 @@
+{
+    "job_id": "9225fc5b-2acc-4c5a-bc94-17b73525367b",
+    "status": "bias_analyzed",
+    "originals": [
+        {
+            "name": "9568.jpg",
+            "url": "https://lous.s-ul.eu/qeslZ4LB?..."
+        },
+        {
+            "name": "17038.jpg",
+            "url": "https://lous.s-ul.eu/AhCelud5?..."
+        }
+    ],
+    "transform": [
+        {
+            "occupation": "Nurse",
+            "images": [
+                {
+                    "original": "9568.jpg",
+                    "url": "https://lous.s-ul.eu/MeryHOOV"
+                },
+                {
+                    "original": "17038.jpg",
+                    "url": "https://lous.s-ul.eu/O0s6vC37"
+                }
+            ]
+        },
+        {
+            "occupation": "Doctor",
+            "images": [
+                {
+                    "original": "9568.jpg",
+                    "url": "https://lous.s-ul.eu/dZx1qvlt"
+                },
+                {
+                    "original": "17038.jpg",
+                    "url": "https://lous.s-ul.eu/YqfmIVqF"
+                }
+            ]
+        }
+    ],
+    "metrics": {
+        "Nurse": [
+            {
+                "image_name": 17038,
+                "original_avg_darkness": 11.167724609375,
+                "transformed_avg_darkness": 10.512899593431122,
+                "original_age": 33,
+                "transformed_age": 42,
+                "age_delta": 9,
+                "original_gender": "Female",
+                "transformed_gender": "Female",
+                "gender_flag": 0
+            },
+            {
+                "image_name": 9568,
+                "original_avg_darkness": 15.480922154017858,
+                "transformed_avg_darkness": 19.840755540497447,
+                "original_age": 27,
+                "transformed_age": 45,
+                "age_delta": 18,
+                "original_gender": "Female",
+                "transformed_gender": "Female",
+                "gender_flag": 0
+            }
+        ],
+        "Doctor": [
+            {
+                "image_name": 17038,
+                "original_avg_darkness": 11.167724609375,
+                "transformed_avg_darkness": 10.54078144929847,
+                "original_age": 33,
+                "transformed_age": 47,
+                "age_delta": 14,
+                "original_gender": "Female",
+                "transformed_gender": "Female",
+                "gender_flag": 0
+            },
+            {
+                "image_name": 9568,
+                "original_avg_darkness": 15.480922154017858,
+                "transformed_avg_darkness": 16.868846659757654,
+                "original_age": 27,
+                "transformed_age": 50,
+                "age_delta": 23,
+                "original_gender": "Female",
+                "transformed_gender": "Male",
+                "gender_flag": 1
+            }
+        ]
+    },
+    "consolidated": {
+        "age_original": [
+            {
+                "image_name": 17038,
+                "Nurse": 33,
+                "Doctor": 33
+            },
+            {
+                "image_name": 9568,
+                "Nurse": 27,
+                "Doctor": 27
+            }
+        ],
+        "age_delta": [
+            {
+                "image_name": 17038,
+                "Nurse": 9,
+                "Doctor": 14
+            },
+            {
+                "image_name": 9568,
+                "Nurse": 18,
+                "Doctor": 23
+            }
+        ],
+        "gender_flag": [
+            {
+                "image_name": 17038,
+                "Nurse": 0,
+                "Doctor": 0
+            },
+            {
+                "image_name": 9568,
+                "Nurse": 0,
+                "Doctor": 1
+            }
+        ],
+        "darkness_original": [
+            {
+                "image_name": 17038,
+                "Nurse": 11.167724609375,
+                "Doctor": 11.167724609375
+            },
+            {
+                "image_name": 9568,
+                "Nurse": 15.480922154017858,
+                "Doctor": 15.480922154017858
+            }
+        ],
+        "darkness_transformed": [
+            {
+                "image_name": 17038,
+                "Nurse": 10.512899593431122,
+                "Doctor": 10.54078144929847
+            },
+            {
+                "image_name": 9568,
+                "Nurse": 19.840755540497447,
+                "Doctor": 16.868846659757654
+            }
+        ]
+    },
+    "bias_summary": {
+        "attribute": "Female_20-29_Black",
+        "age_bias": 0.64,
+        "gender_bias": 0.25,
+        "race_bias": 0.0878690758529974
+    },
+    "age_bias_matrix": [
+        {
+            "image_name": 17038,
+            "Nurse": 0.36,
+            "Doctor": 0.56
+        },
+        {
+            "image_name": 9568,
+            "Nurse": 0.72,
+            "Doctor": 0.92
+        }
+    ],
+    "gender_bias_matrix": [
+        {
+            "image_name": 17038,
+            "Nurse": 0,
+            "Doctor": 0
+        },
+        {
+            "image_name": 9568,
+            "Nurse": 0,
+            "Doctor": 1
+        }
+    ],
+    "race_bias_matrix": [
+        {
+            "image_name": 17038,
+            "Nurse": 0.0327412507971939,
+            "Doctor": 0.0313471580038265
+        },
+        {
+            "image_name": 9568,
+            "Nurse": 0.2179916693239794,
+            "Doctor": 0.0693962252869898
+        }
+    ]
+}

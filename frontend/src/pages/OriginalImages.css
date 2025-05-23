@@ -1,0 +1,201 @@
+.original-wrapper {
+  background-color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-panel {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background-color: #f3f3f3;
+  border-bottom: 1px solid #ddd;
+  flex-wrap: wrap;
+}
+
+.filter-inner {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.button-wrapper-right {
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.filter-options-group {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+.filter-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.radio-option {
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.slider-group {
+  min-width: 220px;
+}
+
+.slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.slider-value {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 1px;
+}
+
+.slider-wrapper input[type="range"] {
+  width: 100%;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 12px;
+  margin-top: 2px;
+  padding: 0 4px;
+}
+
+.slider-labels span:nth-child(2) {
+  color: #333;
+}
+
+.output-box {
+  background-color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
+.no-selection {
+  font-weight: bold;
+  font-size: 22px;
+  text-align: center;
+  margin: auto;
+  padding: 200px;
+}
+
+.summary-text {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+  padding: 0 20px;
+}
+
+.preview-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;              /* same as your grid gap */
+  justify-content: flex-start;
+  width: 100%;            /* span the full available width */
+  padding: 0 20px;        /* keep your side padding */
+  box-sizing: border-box;
+  margin-bottom:10px;
+}
+
+/* Optional: force each “cell” to stay at 180px wide */
+.images-grid > * {
+  flex: 0 0 180px;        /* don’t grow or shrink, always 180px */
+}
+
+.note {
+  font-size: 12px;
+  color: #777;
+  padding: 0 20px;
+}
+
+.button-row-bottom {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 30px 40px;
+  box-sizing: border-box;
+  margin-top: 20px;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toggle-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.toggle-btn:not(.active):not(:disabled):hover {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+}
+
+.toggle-btn.active {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.invalid-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+/* Inside OriginalImages.css */
+.regenerate-hint {
+  font-size: 0.85rem;
+  color: #848282;
+  margin-top: 0.5rem;
+  margin-left: 1.25rem;
+}

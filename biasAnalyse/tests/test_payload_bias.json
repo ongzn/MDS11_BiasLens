@@ -1,0 +1,48 @@
+{
+    "gender": "Female",
+    "age": "20-29",
+    "race": "Black",
+    "num": 2,
+    "occupation": [
+        "Nurse",
+        "Doctor"
+    ],
+    "originals": [
+      {
+        "name": "9568.jpg",
+        "url": "https://lous.s-ul.eu/qeslZ4LB?..."
+      },
+      {
+        "name": "17038.jpg",
+        "url": "https://lous.s-ul.eu/AhCelud5?..."
+      }
+    ],
+    "transform": [
+      {
+        "occupation": "Nurse",
+        "images": [
+          {
+            "original": "9568.jpg",
+            "url": "https://lous.s-ul.eu/MeryHOOV"
+          },
+          {
+            "original": "17038.jpg",
+            "url": "https://lous.s-ul.eu/O0s6vC37"
+          }
+        ]
+      },
+      {
+        "occupation": "Doctor",
+        "images": [
+          {
+            "original": "9568.jpg",
+            "url": "https://lous.s-ul.eu/dZx1qvlt"
+          },
+          {
+            "original": "17038.jpg",
+            "url": "https://lous.s-ul.eu/YqfmIVqF"
+          }
+        ]
+      }
+    ]
+  }

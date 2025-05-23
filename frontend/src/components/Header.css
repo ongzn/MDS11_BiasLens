@@ -1,0 +1,94 @@
+.header {
+  background-color: #333;
+  padding: 18px 42px;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center; 
+  gap: 10px;
+}
+
+.info-icon {
+  margin-left:10px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.side-panel {
+  position: fixed;
+  top: 0;
+  left: -400px;
+  width: 380px;
+  height: 100%;
+  background-color: #f4f4f4;
+  color: #333;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.side-panel.open {
+  left: 0;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+  margin: 3px 0px 25px;
+}
+
+.panel-intro {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #111;
+}
+
+.panel-section-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.panel-steps {
+  margin-bottom: 20px;
+  padding-left: 10px;
+  color: #444;
+  font-size: 14px;
+}
+
+.panel-steps li {
+  margin-bottom: 10px;
+}
+
+.panel-tip {
+  background-color: #fff8dc;
+  border-left: 4px solid #f2e1ac;
+  padding: 12px 14px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #444;
+}
+
+.panel-tip strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  float: right;
+  color: #333;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: #888; 
+}

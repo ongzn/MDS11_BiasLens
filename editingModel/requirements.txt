@@ -1,0 +1,13 @@
+# requirements.txt
+fastapi
+uvicorn[standard]
+pydantic
+diffusers
+transformers
+torch
+pillow
+requests
+huggingface_hub
+accelerate
+firebase-admin
+--extra-index-url https://download.pytorch.org/whl/cu121
