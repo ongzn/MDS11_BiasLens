@@ -58,6 +58,7 @@ To run the system with the correct image pipeline, you must organize your origin
 > 2. Enable Cloud Storage if not already enabled.
 > 3. Inside your Storage, create a folder called: originals/
 > 4. Inside the originals/ folder, create 18 subfolders based on combinations of gender, age, and race:
+```
         originals/
         ├── Female_20-29_Black/
         ├── Female_20-29_White/
@@ -77,7 +78,8 @@ To run the system with the correct image pipeline, you must organize your origin
         ├── Male_60-69_Black/
         ├── Male_60-69_White/
         ├── Male_60-69_EastAsian/
-> 5. Upload image files (.jpg or .png) inside each folder. Recommended size: ~600x600px.
+```
+> 6. Upload image files (.jpg or .png) inside each folder. Recommended size: ~600x600px.
 > 🔐 Make sure:
 > •	Images are publicly readable (or use signed URL logic like the project does).
 > •	The folder naming matches exactly what the system expects.
