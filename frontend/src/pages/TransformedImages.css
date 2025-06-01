@@ -3,10 +3,14 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
+    url('https://lous.s-ul.eu/uVxmgPI5') no-repeat center center fixed;
+  background-size: cover;
 }
 
+
 .filter-panel-1 {
-  background-color: #f3f3f3;
+  background-color: rgba(243, 243, 243, 0.5);
   border-bottom: 1px solid #ddd;
   padding: 20px 40px;
   flex-wrap: wrap;
@@ -141,7 +145,7 @@
 .generating-status {
   font-weight: normal;
   font-size: 14px;
-  color: rgb(152, 152, 152);
+  color: rgb(71, 71, 71);
 }
 
 .generating-overlay {

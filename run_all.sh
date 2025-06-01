@@ -1,5 +1,9 @@
 #!/bin/bash
 
+pkill -f node                              
+pkill -f uvicorn
+pkill -f python
+
 MODE=${1:-development}
 export NODE_ENV=$MODE
 echo "🛠️ Running in $NODE_ENV mode..."
@@ -12,10 +16,9 @@ bash build.sh
 bash start.sh &
 cd ..
 
-# Start biasAnalyse (Docker)
+# Start biasAnalyse without Docker
 cd biasAnalyse
-docker build -t bias-analyse .
-docker run -d -p 8002:8000 bias-analyse
+bash start.sh &
 cd ..
 
 # Start mainEndpoint
@@ -25,24 +28,26 @@ npm install dotenv
 bash start.sh &
 cd ..
 
-# Wait for editingModel (port 8001)
-echo "⏳ Waiting for editingModel (8001)..."
-while ! nc -z localhost 8001; do sleep 1; done
+# editingModel
+echo "⏳ Waiting for editingModel (8000)..."
+while ! nc -z localhost 8000; do sleep 1; done
 echo "✅ editingModel is ready."
 
-# Wait for biasAnalyse (port 8002)
-echo "⏳ Waiting for biasAnalyse (8002)..."
-while ! nc -z localhost 8002; do sleep 1; done
+# biasAnalyse (already good)
+echo "⏳ Waiting for biasAnalyse (8005)..."
+while ! nc -z localhost 8005; do sleep 1; done
 echo "✅ biasAnalyse is ready."
 
-# Wait for mainEndpoint (port 8000)
-echo "⏳ Waiting for mainEndpoint (8000)..."
-while ! nc -z localhost 8000; do sleep 1; done
+# mainEndpoint
+echo "⏳ Waiting for mainEndpoint (5001)..."
+while ! nc -z localhost 5001; do sleep 1; done
 echo "✅ mainEndpoint is ready."
 
 # Start frontend
 cd frontend
 npm install
+npm install react react-dom react-icons
+npm install react-responsive-carousel
 npm run dev &
 
 echo "🎉 All services are up! Frontend is running."

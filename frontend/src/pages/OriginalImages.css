@@ -3,6 +3,9 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
+    url('https://lous.s-ul.eu/uVxmgPI5') no-repeat center center fixed;
+  background-size: cover;
 }
 
 .filter-panel {
@@ -10,7 +13,7 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: 20px 40px;
-  background-color: #f3f3f3;
+  background-color: rgba(243, 243, 243, 0.5);
   border-bottom: 1px solid #ddd;
   flex-wrap: wrap;
 }
@@ -88,7 +91,7 @@
 }
 
 .output-box {
-  background-color: #fff;
+  /* background-color: #fff; */
   padding: 10px;
   text-align: center;
 }

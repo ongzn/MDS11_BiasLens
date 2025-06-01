@@ -12,8 +12,8 @@ const ModeToggle = ({ mode, setMode }) => {
     <label className="mode-switch">
       <input type="checkbox" checked={isCustom} onChange={handleToggle} />
       <span className="slider">
-        <span className="label-left">Custom</span>
-        <span className="label-right">Default</span>
+        <span className="label-left">Default</span>
+        <span className="label-right">Custom</span>
       </span>
     </label>
   );

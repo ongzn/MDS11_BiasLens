@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from '../Tooltip';
 import {
   PieChart,
   Pie,
@@ -34,14 +35,14 @@ const BiasPieChart = ({ data }) => {
   const genVals = data.gender_bias_matrix.flatMap(({ image_name, ...rest }) => Object.values(rest));
   const raceVals = data.race_bias_matrix.flatMap(({ image_name, ...rest }) => Object.values(rest));
 
-  const highestAge = Math.max(...ageVals),    lowestAge = Math.min(...ageVals);
-  const highestGen = Math.max(...genVals),    lowestGen = Math.min(...genVals);
-  const highestRace = Math.max(...raceVals),  lowestRace = Math.min(...raceVals);
+  const highestAge = Math.max(...ageVals), lowestAge = Math.min(...ageVals);
+  const highestGen = Math.max(...genVals), lowestGen = Math.min(...genVals);
+  const highestRace = Math.max(...raceVals), lowestRace = Math.min(...raceVals);
 
   const pieData = [
     { name: 'Gender Bias', value: gender_bias, highest: highestGen, lowest: lowestGen },
-    { name: 'Age Bias'   , value: age_bias   , highest: highestAge, lowest: lowestAge },
-    { name: 'Race Bias'  , value: race_bias  , highest: highestRace, lowest: lowestRace },
+    { name: 'Age Bias', value: age_bias, highest: highestAge, lowest: lowestAge },
+    { name: 'Race Bias', value: race_bias, highest: highestRace, lowest: lowestRace },
   ].map(d => ({
     ...d,
     percentage: ((d.value / total) * 100).toFixed(1),
@@ -54,10 +55,12 @@ const BiasPieChart = ({ data }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <h3 className="text-xl font-semibold text-center text-gray-800 mb-4">
-        Average Bias Composition
-      </h3>
-
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <h3 className="text-xl font-semibold text-gray-800 m-0">
+          Average Bias Composition
+        </h3>
+        <Tooltip content="Shows how much each bias type (gender, age, race) contributes to the total bias. Hover over slices to see the highest and lowest observed values for each metric." />
+      </div>
       {/* center the chart in a slightly shorter container */}
       <div className="flex justify-center items-center h-64">
         <ResponsiveContainer width="60%" height="100%">
@@ -67,7 +70,7 @@ const BiasPieChart = ({ data }) => {
               cx="50%"
               cy="50%"
               outerRadius={100}
-              innerRadius={60}D
+              innerRadius={60} D
               dataKey="value"
               isAnimationActive
               labelLine={false}

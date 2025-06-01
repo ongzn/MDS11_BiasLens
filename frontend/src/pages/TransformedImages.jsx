@@ -10,7 +10,6 @@ import { useGlobalContext } from '../context/GlobalContext';
 import LoadingDots from '../components/LoadingDots';
 import { FaExclamationCircle } from 'react-icons/fa';
 const MAIN_ENDPOINT = import.meta.env.VITE_MAIN_ENDPOINT;
-const BIAS_ANALYSIS_URL = import.meta.env.VITE_BIAS_ANALYSIS;
 
 const allOccupations = [
   'Doctor', 'Nurse', 'Engineer', 'Teacher', 'Software Developer',
@@ -80,8 +79,8 @@ const TransformedImages = () => {
 
   const toggleOccupation = (occ) => {
     const isSelected = localOccupations.includes(occ);
-    if (!isSelected && localOccupations.length >= 5) {
-      openModal('You can only select up to 5 occupations.');
+    if (!isSelected && localOccupations.length >= 3) {
+      openModal('You can only select up to 3 occupations.');
       return;
     }
     setLocalOccupations(prev =>
@@ -111,6 +110,7 @@ const TransformedImages = () => {
     return endpoints[model] || null;
   };
 
+
   const handleGenerate = () => {
     if (!localModel) return openModal('Please select a model.');
     if (localOccupations.length === 0) return openModal('Please select at least one occupation.');
@@ -130,7 +130,6 @@ const TransformedImages = () => {
     setGeneratedOccupations(localOccupations);
     // Clear previous images
     setLocalTransformed({});
-    await new Promise((resolve) => setTimeout(resolve, 0)); // 🔄 Let UI apply clear state
 
     // Now apply fresh placeholders
     const placeholder = {};
@@ -163,7 +162,7 @@ const TransformedImages = () => {
             images: { name: img.name, url: img.url }
           },
           {
-            timeout: 3600000 // 1 hour in milliseconds
+            timeout: 15000000000  
           }
         );
 
@@ -202,46 +201,26 @@ const TransformedImages = () => {
         } catch (err) {
           console.error(`❌ Failed to transform image ${img.name} for ${occ}`, err);
 
-          const failedImg = {
-            occupation: occ,
-            original: img.url,
-            transformed: '',
-            isLoading: false,
-            failed: true,
-            key: `failed-${occ}-${i}`
-          };
+          const failedTransformed = {};
+          const failedProgress = {};
 
-          setLocalTransformed(prev => {
-            const index = prev[occ].findIndex(item => item.original === img.url);
-            if (index === -1) return prev;
+          // 🔴 Mark ALL occupations as failed
+          for (const o of localOccupations) {
+            failedTransformed[o] = originalImages.map((img, idx) => ({
+              occupation: o,
+              original: img.url,
+              transformed: '',
+              isLoading: false,
+              failed: true,
+              key: `failed-${o}-${idx}`
+            }));
+            failedProgress[o] = originalImages.length;
+          }
 
-            const updated = [...prev[occ]];
-            updated[index] = failedImg;
+          setLocalTransformed(failedTransformed);
+          setProgress(failedProgress);
 
-            // Mark all remaining images as failed (if they haven't been handled yet)
-            for (let j = index + 1; j < updated.length; j++) {
-              if (!updated[j].transformed && updated[j].isLoading) {
-                updated[j] = {
-                  ...updated[j],
-                  isLoading: false,
-                  failed: true,
-                  key: `failed-${occ}-${j}`
-                };
-              }
-            }
-
-            return {
-              ...prev,
-              [occ]: updated
-            };
-          });
-
-          setProgress(prev => ({
-            ...prev,
-            [occ]: originalImages.length // simulate full progress for visual consistency
-          }));
-
-          openModal(`Image failed to transform. Process halted.`, 'alert');
+          openModal(`Image failed to transform due to high traffic. Process halted.`, 'alert');
           setIsGenerating(false);
           return;
         }
@@ -291,7 +270,7 @@ const TransformedImages = () => {
 
     try {
       setIsCalculating(true);
-      const res = await axios.post(BIAS_ANALYSIS_URL, payload);
+      const res = await axios.post(`${MAIN_ENDPOINT}/analyze-bias`, payload);
       navigate('/result', { state: { result: res.data } });
     } catch (err) {
       console.error('Bias analysis failed:', err);
@@ -300,6 +279,7 @@ const TransformedImages = () => {
       setIsCalculating(false);
     }
   };
+
 
   return (
     <div className="transformed-wrapper">
@@ -312,9 +292,9 @@ const TransformedImages = () => {
               <label className="filter-title">Model</label>
               <div className="radio-options">
                 {[
-                  { name: 'InstructPix2Pix', time: '~1s per image' },
-                  { name: 'Img2Img', time: '~2.9 min per image' },
-                  { name: 'MagicBrush', time: '~3s per image' }
+                  { name: 'InstructPix2Pix', time: '~1.5 min per image' },
+                  { name: 'Img2Img', time: '~3 min per image' },
+                  { name: 'MagicBrush', time: '~1.5 min per image' }
                 ].map(({ name, time }) => (
                   <label key={name} className="model-option">
                     <input
@@ -322,7 +302,13 @@ const TransformedImages = () => {
                       name="model"
                       value={name}
                       checked={localModel === name}
-                      onChange={(e) => setLocalModel(e.target.value)}
+                      onChange={(e) => {
+                        const selected = e.target.value;
+                        setLocalModel(selected);
+                        if (selected === 'Img2Img') {
+                          openModal('⚠️ Not recommended. Note that selected models are currently experimental and could suffer from performance issues.', 'alert');
+                        }
+                      }}
                       disabled={isGenerating}
                     />
                     <span className="model-label">{name} <span className="model-time">({time})</span></span>
@@ -332,19 +318,19 @@ const TransformedImages = () => {
             </div>
 
             <div className="checkbox-group">
-              <label className="filter-title">Occupation (Max:5)</label>
+              <label className="filter-title">Occupation (Max:3)</label>
               <div className="checkbox-grid">
-                {allOccupations.map((occ) => (
-                  <label key={occ} className="checkbox-option">
-                    <input
-                      type="checkbox"
-                      checked={localOccupations.includes(occ)}
-                      onChange={() => toggleOccupation(occ)}
-                      disabled={isGenerating || (!localOccupations.includes(occ) && localOccupations.length >= 5)}
-                    />
-                    {occ}
-                  </label>
-                ))}
+               {allOccupations.map((occ) => (
+                <label key={occ} className="checkbox-option">
+                  <input
+                    type="checkbox"
+                    checked={localOccupations.includes(occ)}
+                    onChange={() => toggleOccupation(occ)}
+                    disabled={isGenerating || (!localOccupations.includes(occ) && localOccupations.length >= 3)}
+                  />
+                  {occ}
+                </label>
+              ))}
               </div>
 
               {/* {mode === 'custom' && (
@@ -398,9 +384,9 @@ const TransformedImages = () => {
             {mode === 'default' && attributes && (
               <div className="summary-text">
                 <p>
-                  Selected Demographics:
-                  <strong>{attributes.gender || '-'}</strong> |
-                  <strong>{attributes.age || '-'}</strong> |
+                  Selected Demographics: &nbsp;
+                  <strong>{attributes.gender || '-'}</strong> | &nbsp;
+                  <strong>{attributes.age || '-'}</strong> | &nbsp;
                   <strong>{attributes.race || '-'}</strong>
                 </p>
               </div>
@@ -416,12 +402,15 @@ const TransformedImages = () => {
                     </span>
                   )}
                 </p>
-                <div className="images-grid">
+               <div className="images-grid">
                   {(localTransformed[occ] || []).map((img, i) => (
                     <ImageBox
                       key={img.key || i}
                       imageUrl={img.transformed}
                       isLoading={img.isLoading}
+                      icon={img.failed ? (
+                        <FaExclamationCircle color="red" title="Transformation failed" size={24} />
+                      ) : null}
                     />
                   ))}
                 </div>

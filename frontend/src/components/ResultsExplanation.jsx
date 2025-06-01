@@ -2,70 +2,72 @@ import React from 'react';
 import { Info, AlertTriangle, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Tooltip from './Tooltip';
+import './ResultsExplanation.css';
 
 /**
  * ResultsExplanation component that explains the bias analysis results
- * @returns {React.ReactElement} Rendered results explanation component
+ * @returns {React.ReactElement}
  */
 const ResultsExplanation = () => {
   return (
-    <div className="max-w-4xl mx-auto mt-8 mb-12 px-6">
+    <div className="results-container">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="bg-white rounded-lg shadow-md p-6"
+        className="results-card"
       >
-        <div className="flex items-start gap-4">
-          <Info className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+        <div className="results-content">
+  
           <div>
-            <div className="flex items-center gap-2">
+            <div className="results-header">
               <motion.h2
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="text-2xl font-bold text-gray-800"
               >
-                Understanding Your Results
+                Interpreting Your Bias Scores
               </motion.h2>
-              <Tooltip content="Learn how to interpret the bias analysis scores and their significance" />
+              <Tooltip content="See how we measure and present bias in image transformations" />
             </div>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="text-gray-600 leading-relaxed mb-6"
+              className="results-description"
             >
-              Our bias analysis evaluates potential biases in recruitment and hiring processes across different occupations.
-              The scores are calculated based on historical data and current industry trends.
+              We compare the original face images with the AI-edited versions across up to five occupations. Our system measures shifts in perceived gender, age, and skin tone for each image. These shifts become a "bias score" on the model used, ranged between 0 and 1, where 0 means no change and 1 means a large change.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-lg"
+              className="results-levels"
             >
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm">
-                  <strong className="text-green-700">0.00–0.40:</strong> Low Bias
-                </span>
+              <div className="bias-level bias-low">
+                <CheckCircle className="icon" />
+                <span><strong>0.00–0.40:</strong> Low Bias</span>
               </div>
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-yellow-500" />
-                <span className="text-sm">
-                  <strong className="text-yellow-700">0.41–0.60:</strong> Medium Bias
-                </span>
+              <div className="bias-level bias-med">
+                <AlertTriangle className="icon" />
+                <span><strong>0.41–0.60:</strong> Medium Bias</span>
               </div>
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-red-500" />
-                <span className="text-sm">
-                  <strong className="text-red-700">0.61–1.00:</strong> High Bias
-                </span>
+              <div className="bias-level bias-high">
+                <AlertTriangle className="icon" />
+                <span><strong>0.61–1.00:</strong> High Bias</span>
               </div>
             </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.4 }}
+              className="text-gray-600 leading-relaxed mt-6"
+            >
+              <strong>Why it matters:</strong> Large shifts in how the AI sees gender, age, or skin tone suggest potential bias. For example, if a single individual’s appearance is altered more when labeled "Doctor" versus "Nurse," that could indicate the model associates certain demographics with certain jobs. Use these insights to understand and mitigate unfair stereotypes in AI imagery.
+            </motion.p>
           </div>
         </div>
       </motion.div>
@@ -74,4 +76,3 @@ const ResultsExplanation = () => {
 };
 
 export default ResultsExplanation;
-

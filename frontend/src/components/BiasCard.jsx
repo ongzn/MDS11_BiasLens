@@ -3,9 +3,6 @@ import { motion } from 'framer-motion';
 import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import Tooltip from './Tooltip';
 
-/**
- * BiasCard component displays bias analysis results for a specific occupation
- */
 const BiasCard = ({
   genderBias,
   ageBias,
@@ -20,30 +17,37 @@ const BiasCard = ({
   originalAPD,
   transformedAPD
 }) => {
+  // Determine color/icon for age and race bias
   const getBiasInfo = (value) => {
     if (value <= 0.4) return { color: 'text-green-600', icon: CheckCircle, label: 'Low Bias' };
     if (value <= 0.6) return { color: 'text-yellow-600', icon: AlertTriangle, label: 'Medium Bias' };
     return { color: 'text-red-600', icon: XCircle, label: 'High Bias' };
   };
 
+  // Clamp and format numeric biases
   const safeAgeBias = Math.min(ageBias, 1).toFixed(2);
   const safeRaceBias = Math.min(raceBias, 1).toFixed(2);
 
+  // Get display info for age and race
   const ageBiasInfo = getBiasInfo(ageBias);
   const raceBiasInfo = getBiasInfo(raceBias);
 
-  // Determine if gender changed or not (0 = unchanged, 1 = changed)
+  // Gender change detection: proportion of images where predicted gender differs (0 = none, 1 = all)
   const genderChanged = genderBias >= 1;
   const genderColor = genderChanged ? 'text-red-600' : 'text-green-600';
-  const genderIcon = genderChanged ? XCircle : CheckCircle;
+  const GenderIcon = genderChanged ? XCircle : CheckCircle;
   const genderText = genderChanged ? 'Changed' : 'Unchanged';
+
+  // Create React components for icons (must be capitalized)
+  const AgeIcon    = ageBiasInfo.icon;
+  const RaceIcon   = raceBiasInfo.icon;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      className="bg-white rounded-lg shadow-lg w-full min-h-[450px] flex flex-col justify-between"
+      className="bg-white rounded-lg shadow-lg w-full min-h-[450px] flex flex-col justify-between text-sm"
     >
       <div className="relative">
         <div className="grid grid-cols-2 gap-1">
@@ -72,38 +76,34 @@ const BiasCard = ({
             </React.Fragment>
           ))}
         </div>
-        <div className="absolute top-2 left-2 bg-gray-900/70 text-white px-3 py-1 rounded-full text-sm font-medium">
+        <div className="absolute top-2 left-2 bg-gray-900/70 text-white px-3 py-1 rounded-full text-xs font-medium">
           {index}
         </div>
       </div>
 
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">
-          
-        </h3>
-
         <div className="space-y-2">
           {/* Gender Bias */}
           <div className="flex items-center justify-between bg-gray-50 p-2 rounded">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="font-medium text-gray-600">
               Gender Bias
-              <Tooltip content="Gender is considered changed if the model predicted a different gender after transformation" />
+              <Tooltip content="Metric for images where the predicted gender changed between original and transformed (Unchanged = 0, Changed = 1)" />
             </span>
             <div className={`flex items-center gap-2 ${genderColor}`}>
-              <genderIcon className="w-4 h-4" />
-              <span className="text-sm font-semibold">{genderText}</span>
+              <GenderIcon className="w-4 h-4" />
+              <span className="font-semibold">{genderText}</span>
             </div>
           </div>
 
           {/* Age Bias */}
           <div className="flex items-center justify-between bg-gray-50 p-2 rounded">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="font-medium text-gray-600">
               Age Bias
-              <Tooltip content="Indicator of age-based discrimination in model predictions" />
+              <Tooltip content="Normalized absolute difference in predicted age between original and transformed images (0 = no change, 1 = max change)" />
             </span>
             <div className="flex items-center gap-2">
-              <ageBiasInfo.icon className={`w-4 h-4 ${ageBiasInfo.color}`} />
-              <span className={`text-sm font-semibold ${ageBiasInfo.color}`}>
+              <AgeIcon className={`w-4 h-4 ${ageBiasInfo.color}`} />
+              <span className={`font-semibold ${ageBiasInfo.color}`}>
                 {safeAgeBias}
               </span>
             </div>
@@ -111,13 +111,13 @@ const BiasCard = ({
 
           {/* Race Bias */}
           <div className="flex items-center justify-between bg-gray-50 p-2 rounded">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="font-medium text-gray-600">
               Race Bias
-              <Tooltip content="Measure of potential bias based on skin tone or ethnicity" />
+              <Tooltip content="Normalized absolute difference in Pixel Darkness (APD) values between original and transformed images (0 = no change, 1 = max change)" />
             </span>
             <div className="flex items-center gap-2">
-              <raceBiasInfo.icon className={`w-4 h-4 ${raceBiasInfo.color}`} />
-              <span className={`text-sm font-semibold ${raceBiasInfo.color}`}>
+              <RaceIcon className={`w-4 h-4 ${raceBiasInfo.color}`} />
+              <span className={`font-semibold ${raceBiasInfo.color}`}>
                 {safeRaceBias}
               </span>
             </div>
@@ -125,15 +125,15 @@ const BiasCard = ({
 
           {/* Original vs Transformed Info */}
           <div className="grid grid-cols-2 gap-2 mt-3">
-            <div className="bg-gray-50 p-2 rounded text-sm text-gray-700 h-full">
+            <div className="bg-gray-50 p-2 rounded text-gray-700 h-full">
               <strong>Original Age:</strong> {originalAge ?? 'N/A'} <br />
               <strong>Original Gender:</strong> {originalGender ?? 'N/A'} <br />
               <strong>Original APD:</strong> {originalAPD ?? 'N/A'}
             </div>
-            <div className="bg-gray-50 p-2 rounded text-sm text-gray-700 h-full">
+            <div className="bg-gray-50 p-2 rounded text-gray-700 h-full">
               <strong>Transformed Age:</strong> {transformedAge ?? 'N/A'} <br />
               <strong>Transformed Gender:</strong> {transformedGender ?? 'N/A'} <br />
-              <strong>Transformed APD:</strong> {transformedAPD?? 'N/A'}
+              <strong>Transformed APD:</strong> {transformedAPD ?? 'N/A'}
             </div>
           </div>
         </div>

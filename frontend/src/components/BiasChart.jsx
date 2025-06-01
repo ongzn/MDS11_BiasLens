@@ -23,7 +23,7 @@ const BiasChart = ({ data }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-2">
           <h3 className="text-xl font-semibold text-gray-800">Bias Distribution by Occupation</h3>
-          <Tooltip content="Compare age, gender, and race bias levels per occupation. Switch views or apply filters for deeper analysis." />
+          <Tooltip content="Displays gender, age, and skin-tone shift scores for each occupation based on AI transformations. Use the Dumbbell or Bar view to compare changes side‐by‐side, and the filter dropdown to focus on a single bias type for clearer insights."/>
         </div>
 
         <div className="flex flex-wrap items-center gap-4">

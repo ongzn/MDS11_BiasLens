@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
-
+import Tooltip from '../Tooltip';
 // Color logic for arc fill
 const getArcColor = (percent) => {
   if (percent <= 40) return '#22C55E';     // Green (Tailwind: green-500)
@@ -103,10 +103,12 @@ const BiasGaugeChart = ({ data }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <h3 className="text-xl font-semibold text-center text-gray-800 mb-6">
-        Bias Progress Overview
-      </h3>
-
+      <div className="flex items-center justify-center gap-2 mb-6">
+        <h3 className="text-xl font-semibold text-center text-gray-800 mb-0">
+          Bias Progress Overview
+        </h3>
+        <Tooltip content="Each gauge shows one bias metric (gender, age, race) as a percentage of maximum possible bias. Hover a gauge to see the highest and lowest individual image scores contributing to its value." />
+      </div>
       <div className="flex justify-center gap-10">
         <BiasGauge
           label="Gender Bias"

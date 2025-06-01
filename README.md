@@ -92,6 +92,22 @@ To run the system with the correct image pipeline, you must organize your origin
 > 3. Replace the value in main.py like this:
 >    HF_TOKEN = "your_actual_token_here"
 
+> 📄 `biasAnalyse/.env`
+
+```env
+FACEPP_KEY="KM1VUqsN1lQGmtfPLxnsXWfYvQPcteQr"
+FACEPP_SECRET="tt010dmrqvZBFDQUINyBq8hKMiBuDZ98"
+BASE_TMP=/tmp
+```
+
+> 🧠 **Usage**:  
+> - Create `.env` inside the `biasAnalyse/` folder.  
+> - Replace the API keys with your own credentials if needed.  
+> - Make sure the `BASE_TMP` path exists and is writable by the app.  
+> - These variables are read at runtime by the bias analysis backend.
+
+> 🔐 **Security Tip**:  
+> Never commit your `.env` files with real credentials to a public repository. Use `.gitignore` to exclude them.
 ---
 
 ### 2. **Running All Services**

@@ -29,7 +29,7 @@ const BiasProgress = ({ data }) => {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <h3 className="text-xl font-semibold text-gray-800">Overall Bias Level</h3>
-            <Tooltip content="This score reflects the combined average of gender, age, and race biases across all occupations." />
+            <Tooltip content="This overall bias score averages the normalized changes in gender, age, and skin-tone (race) predictions between your original and AI-transformed images. A value near 0 means minimal change (low bias), while a value near 1 indicates large shifts (high bias)." />
           </div>
           <span className={`text-sm font-medium ${color} px-3 py-1 rounded-full text-white`}>
             {label}

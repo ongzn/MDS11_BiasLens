@@ -16,25 +16,30 @@ class BiasAnalyzer:
         # ─── existing age & gender loading ───
         age_delta_path   = os.path.join(self.consolidated_dir, "age_delta.csv")
         gender_flag_path = os.path.join(self.consolidated_dir, "gender_flag.csv")
+        dark_orig_path   = os.path.join(self.consolidated_dir, "darkness_original.csv")      # COMMENT
+        dark_trans_path  = os.path.join(self.consolidated_dir, "darkness_transformed.csv")   # COMMENT
 
         df_delta  = pd.read_csv(age_delta_path,   index_col=0)
         df_gender = pd.read_csv(gender_flag_path, index_col=0)
 
+        # ─── NEW: load darkness tables for racial bias ───
+        df_dark_orig     = pd.read_csv(dark_orig_path,   index_col=0)                       # COMMENT
+        df_dark_trans    = pd.read_csv(dark_trans_path,  index_col=0)       
+        
+        # print(df_delta)
+        # print(df_gender)
+        # print(df_dark_orig)   # COMMENT: print original darkness
+        # print(df_dark_trans)
+
         # ─── compute age & gender bias ───
         age_bias_matrix    = df_delta.abs() / 25
-        age_score          = age_bias_matrix.stack().mean()
+        age_score = min(age_bias_matrix.stack().mean(), 1)
         gender_bias_matrix = df_gender
-        gender_score       = gender_bias_matrix.stack().mean()
-
-        # ─── NEW: load darkness tables for racial bias ───
-        dark_orig_path   = os.path.join(self.consolidated_dir, "darkness_original.csv")      # COMMENT
-        dark_trans_path  = os.path.join(self.consolidated_dir, "darkness_transformed.csv")   # COMMENT
-        df_dark_orig     = pd.read_csv(dark_orig_path,   index_col=0)                       # COMMENT
-        df_dark_trans    = pd.read_csv(dark_trans_path,  index_col=0)                       # COMMENT
+        gender_score       = gender_bias_matrix.stack().mean()                # COMMENT
 
         # ─── NEW: compute racial bias matrix & summary ───
-        race_bias_matrix = (df_dark_trans - df_dark_orig).abs() / 20.0      # COMMENT
-        race_score       = race_bias_matrix.stack().mean()                # COMMENT
+        race_bias_matrix = (df_dark_trans - df_dark_orig).abs() / 13      # COMMENT
+        race_score       = min(race_bias_matrix.stack().mean(), 1)               # COMMENT
 
         # ─── write summary CSV (now including race_bias) ───
         summary_df = pd.DataFrame([{

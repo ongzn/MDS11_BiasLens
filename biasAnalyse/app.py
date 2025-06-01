@@ -144,7 +144,7 @@ def process_job(job_id: str, payload: AnalyzeRequest):
     
     skin_analyzer = SkinAnalyzer(job_id, base_tmp)
     skin_map = skin_analyzer.analyze()
-    print(skin_map)
+    # print(skin_map)
     jobs[job_id]["skin"] = skin_map
     jobs[job_id]["status"] = "skin_analyzed"
     print("Skin Analysis Performed")
@@ -232,12 +232,11 @@ def analyze_bias(payload: AnalyzeRequest):
         for idx, row in gender_df.iterrows()
     ]
 
-    # ─── COMMENT: Race (skin‐darkness) matrix ───
-    race_df = pd.read_csv(job["bias"]["race_matrix"], index_col=0)            # COMMENT
-    response["race_bias_matrix"] = [                                          # COMMENT
-        {**{"image_name": idx}, **row.to_dict()}                              # COMMENT
-        for idx, row in race_df.iterrows()                                    # COMMENT
-    ]                                                                         # COMMENT
+    race_df = pd.read_csv(job["bias"]["race_matrix"], index_col=0)       
+    response["race_bias_matrix"] = [                                 
+        {**{"image_name": idx}, **row.to_dict()}                      
+        for idx, row in race_df.iterrows()                          
+    ]                                                                 
 
     # Optionally clean up in-memory state
     del jobs[job_id]
@@ -254,23 +253,38 @@ def analyze_bias(payload: AnalyzeRequest):
         return v
 
     response = sanitize(response)
+
+    # identify age bias failures (null values)
+    failures = []
+    for row in response.get("age_bias_matrix", []):
+        image_name = row.get("image_name")
+        for occ, val in row.items():
+            if occ == "image_name":
+                continue
+            if val is None:
+                failures.append({"image_name": image_name, "occupation": occ})
+    response["bias_failures"] = {
+        "total_failed": len(failures),
+        "details": failures
+    }
+
     return response
 
 @app.post("/check_faces")
 async def check_faces(payload: FaceCheckRequest):
     client = FaceppClient()
 
-    # COMMENT: build batch using img.name as tag so we can map back
+    # build batch using img.name as tag so we can map back
     batches = [(img.name, str(img.url)) for img in payload.images]
 
     results = client.detect_batch(batches)
 
-    # COMMENT: iterate original payload.images to preserve name/url fields
+    # iterate original payload.images to preserve name/url fields
     return [
         {
-            "name": img.name,                             # COMMENT: include filename
-            "url":  img.url,                              # COMMENT: include the original URL
-            "has_face": bool(results.get(img.name, {}).get("faces"))  # COMMENT: face presence
+            "name": img.name,                          
+            "url":  img.url,                    
+            "has_face": bool(results.get(img.name, {}).get("faces")) 
         }
         for img in payload.images
     ]

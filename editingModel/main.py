@@ -40,13 +40,15 @@ bucket = storage.bucket()
 print("Firebase ready.")
 
 # --- Device & HF login ---
-device = "cuda" if torch.cuda.is_available() else "cpu"
+# device = "cuda" if torch.cuda.is_available() else "cpu" # uncomment id your device support cuda
+device = "cpu"  # Force CPU on macOS
 login(HF_TOKEN)
 
 # --- Pix2Pix --
 pix2pix = StableDiffusionInstructPix2PixPipeline.from_pretrained(
     "timbrooks/instruct-pix2pix",
-    torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+    # torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+    torch_dtype=torch.float32,
     safety_checker=None,
     low_cpu_mem_usage=True 
 ).to(device)
@@ -67,7 +69,8 @@ print("Img2Img Pipeline ready.")
 # Initialize MagicBrush pipeline
 magicbrush = StableDiffusionInstructPix2PixPipeline.from_pretrained(
     "vinesmsuic/magicbrush-jul7",
-    torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+    # torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+    torch_dtype=torch.float32,
     use_safetensors=False
 ).to(device)
 magicbrush.scheduler = EulerAncestralDiscreteScheduler.from_config(magicbrush.scheduler.config)

@@ -250,9 +250,8 @@ const OriginalImages = () => {
       clearTransformedImages();
     } catch (err) {
       console.error(err);
-      setAlertMessage('Failed to fetch images. Try again.');
-
-      const failedImages = Array.from({ length: pendingNumImages }, (_, i) => ({
+        setAlertMessage('Failed to fetch images. Try again.');
+        const failedImages = Array.from({ length: pendingNumImages }, (_, i) => ({
         name: `error-${i}`,
         url: '',
         isLoading: false,
@@ -372,13 +371,13 @@ const OriginalImages = () => {
                   <input
                     type="range"
                     min="1"
-                    max="10"
+                    max="5"
                     value={pendingNumImages}
                     onChange={(e) => setPendingNumImages(Number(e.target.value))}
                   />
                   <div className="slider-labels">
                     <span>1</span>
-                    <span>10</span>
+                    <span>5</span>
                   </div>
                 </div>
               </div>
@@ -427,7 +426,7 @@ const OriginalImages = () => {
                 />
               );
             })}
-            {mode === 'custom' && allUploads.length < 10 && (
+            {mode === 'custom' && allUploads.length < 5 && (
               <ImageBox isUploadButton onClick={openFileDialog} />
             )}
           </div>

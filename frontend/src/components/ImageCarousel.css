@@ -1,0 +1,21 @@
+    /* src/components/ImageCarousel.css */
+.slide-pair {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+.slide-pair figure {
+  margin: 0;
+  text-align: center;
+}
+.slide-pair img {
+  max-height: 300px;
+  object-fit: contain;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.slide-pair figcaption {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #555;
+}

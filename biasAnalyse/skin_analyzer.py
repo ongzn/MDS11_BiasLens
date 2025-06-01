@@ -75,12 +75,23 @@ class SkinAnalyzer:
 
     def _compute_darkness(self, input_dir, original_dir, out_subdir):
         records = []
-        for fn in os.listdir(input_dir):
-            if not fn.lower().endswith((".jpg", ".jpeg", ".png")):
-                continue
-            img = Image.open(os.path.join(input_dir, fn)).convert("L")
-            arr = np.array(img)
-            records.append({"image_name": fn, "avg_darkness": float(arr.mean() if arr.size else 0.0)})
+        # Determine reference image names from original_dir
+        ref_files = [fn for fn in os.listdir(original_dir)
+                     if fn.lower().endswith((".jpg", ".jpeg", ".png"))]
+        hsv_files = {fn for fn in os.listdir(input_dir)
+                     if fn.lower().endswith((".jpg", ".jpeg", ".png"))}
+        for fn in ref_files:
+            if fn not in hsv_files:
+                # HSV version missing: record None
+                records.append({"image_name": fn, "avg_darkness": None})
+            else:
+                # Compute darkness for available HSV image
+                img_path = os.path.join(input_dir, fn)
+                # print(f"Processing {fn} in {input_dir}")
+                img = Image.open(img_path).convert("L")
+                arr = np.array(img)
+                # print(f"Processing {fn}: shape={arr.shape}, dtype={arr.dtype}, darkness={arr.mean()}")
+                records.append({"image_name": fn, "avg_darkness": float(arr.mean())})
         out_csv_dir = os.path.join(self.skin_root, out_subdir)
         os.makedirs(out_csv_dir, exist_ok=True)
         out_csv = os.path.join(out_csv_dir, "avg_darkness.csv")
@@ -90,13 +101,21 @@ class SkinAnalyzer:
     def analyze(self):
         result = {}
         orig_fc = self._face_crop_dir(self.orig_dir, "originals")
-        orig_hsv = self._convert_hsv_dir(orig_fc, "originals")
-        result["originals"] = self._compute_darkness(orig_hsv, self.orig_dir, "originals")
+        # If no faces detected for originals, set value to None
+        if not os.listdir(orig_fc):
+            result["originals"] = None
+        else:
+            orig_hsv = self._convert_hsv_dir(orig_fc, "originals")
+            result["originals"] = self._compute_darkness(orig_hsv, self.orig_dir, "originals")
         for occ in os.listdir(self.trans_dir):
             occ_in = os.path.join(self.trans_dir, occ)
             if not os.path.isdir(occ_in):
                 continue
             fc = self._face_crop_dir(occ_in, occ)
+            # If no faces detected for this transform, set value to None
+            if not os.listdir(fc):
+                result[occ] = None
+                continue
             hsv = self._convert_hsv_dir(fc, occ)
             result[occ] = self._compute_darkness(hsv, occ_in, occ)
         return result

@@ -67,6 +67,9 @@ class MetricCalculator:
 
                         # Derive image_name (e.g. "9568.jpg")
                         image_name = fname.split('-', 1)[1].rsplit('.json', 1)[0]
+                        # print(f"data_t: {data_t}")
+                        # print(f"orig_dark_lookup: {orig_dark_lookup}")
+                        # print(f"trans_dark_lookup: {trans_dark_lookup}")
 
                         # Load original JSON
                         orig_json_path = os.path.join(orig_dir, f"orig-{image_name}.json")
@@ -75,16 +78,22 @@ class MetricCalculator:
 
                         faces_o = data_o.get("faces", [])
                         faces_t = data_t.get("faces", [])
-                        if not faces_o or not faces_t:
-                            continue  # no face detected
-
+                        # skip if no face detected in original
+                        if not faces_o:
+                            continue
+                        # always get original attributes
                         age_o = faces_o[0]["attributes"]["age"]["value"]
-                        age_t = faces_t[0]["attributes"]["age"]["value"]
                         gen_o = faces_o[0]["attributes"]["gender"]["value"]
-                        gen_t = faces_t[0]["attributes"]["gender"]["value"]
-
-                        delta = age_t - age_o
-                        flag  = 1 if (gen_t != gen_o) else 0
+                        # assign None if no transformed face detected
+                        if not faces_t:
+                            age_t = None
+                            gen_t = None
+                        else:
+                            age_t = faces_t[0]["attributes"]["age"]["value"]
+                            gen_t = faces_t[0]["attributes"]["gender"]["value"]
+                        # compute delta and flag, or None if missing
+                        delta = None if age_t is None else age_t - age_o
+                        flag = None if gen_t is None else (1 if gen_t != gen_o else 0)
 
                         # COMMENT: lookup darkness values
                         orig_dark = orig_dark_lookup.get(image_name, "")

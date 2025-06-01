@@ -7,7 +7,7 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   server: {
-    historyApiFallback: true, // ⬅️ this solves the dev issue
+    historyApiFallback: true,  
   },
   build: {
     rollupOptions: {
