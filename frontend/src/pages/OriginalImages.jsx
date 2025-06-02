@@ -24,7 +24,6 @@ const OriginalImages = () => {
     verifiedUploads, setVerifiedUploads
   } = useGlobalContext();
 
-  // ==== State ====
   const [imageToDelete, setImageToDelete] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
@@ -39,11 +38,9 @@ const OriginalImages = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showRegenerateConfirm, setShowRegenerateConfirm] = useState(false);
 
-  // ==== Refs ====
   const fileInputRef = useRef(null);
   const prevModeRef = useRef(mode);
 
-  // ==== Effects ====
   useEffect(() => {
     if (prevModeRef.current !== mode) {
       setOriginalImages([]);
@@ -77,7 +74,7 @@ const OriginalImages = () => {
     ) {
       setIsValidated(true);
     } else {
-      setIsValidated(false); // <== ADD THIS LINE
+      setIsValidated(false); 
     }
   }, [verifiedUploads, unverifiedUploads, mode]);
 
@@ -98,7 +95,6 @@ const OriginalImages = () => {
     }
   }, [verifiedUploads, unverifiedUploads, mode]);
 
-  // ==== Utility ====
   const formatLabel = (value) => ({
     Black: 'Black',
     EastAsian: 'East Asian',
@@ -141,7 +137,6 @@ const OriginalImages = () => {
     });
   };
 
-  // ==== Handlers ====
   const openFileDialog = () => fileInputRef.current?.click();
 
   const handleFileChange = async (e) => {
@@ -223,7 +218,7 @@ const OriginalImages = () => {
       return;
     }
 
-    await generateImages(); // separate logic into a helper
+    await generateImages(); 
   };
 
   const generateImages = async () => {
@@ -414,7 +409,7 @@ const OriginalImages = () => {
                       <FaExclamationCircle color="red" title="Failed to load" size={24} />
                     ) : icon
                   }
-                  isLoading={img.isLoading || loadingIndex === i} // ✅ check loading flag
+                  isLoading={img.isLoading || loadingIndex === i} 
                   onClick={() => {
                     if (mode === 'default') {
                       setConfirmIndex(i);

@@ -3,8 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
-    url('https://lous.s-ul.eu/uVxmgPI5') no-repeat center center fixed;
+  background-color: white; 
   background-size: cover;
 }
 
@@ -91,7 +90,6 @@
 }
 
 .output-box {
-  /* background-color: #fff; */
   padding: 10px;
   text-align: center;
 }
@@ -121,17 +119,16 @@
 .images-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;              /* same as your grid gap */
+  gap: 20px;             
   justify-content: flex-start;
-  width: 100%;            /* span the full available width */
-  padding: 0 20px;        /* keep your side padding */
+  width: 100%;          
+  padding: 0 20px;       
   box-sizing: border-box;
   margin-bottom:10px;
 }
 
-/* Optional: force each “cell” to stay at 180px wide */
 .images-grid > * {
-  flex: 0 0 180px;        /* don’t grow or shrink, always 180px */
+  flex: 0 0 180px;      
 }
 
 .note {
@@ -171,8 +168,8 @@
 }
 
 .toggle-btn.active {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #444;
+  border-color: white;
   color: white;
 }
 
@@ -195,7 +192,6 @@
   padding: 2px;
 }
 
-/* Inside OriginalImages.css */
 .regenerate-hint {
   font-size: 0.85rem;
   color: #848282;

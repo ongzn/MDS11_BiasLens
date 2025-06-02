@@ -9,6 +9,7 @@ export NODE_ENV=$MODE
 echo "🛠️ Running in $NODE_ENV mode..."
 
 echo "Starting all services..."
+pip install google-cloud-storage
 
 # Start editingModel
 cd editingModel

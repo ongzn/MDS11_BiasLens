@@ -9,7 +9,7 @@ import ResultsGrid from '../components/ResultsGrid';
 import BiasSection from '../components/BiasSection';
 import BiasProgress from '../components/BiasProgress';
 import Button from '../components/Button';
-import BiasFailureQueue from '../components/BiasFaliureQueue'; // ✅ import
+import BiasFailureQueue from '../components/BiasFaliureQueue'; 
 
 const Result = () => {
   const [data, setData] = useState(null);

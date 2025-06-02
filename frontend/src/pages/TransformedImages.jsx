@@ -9,7 +9,6 @@ import axios from 'axios';
 import { useGlobalContext } from '../context/GlobalContext';
 import LoadingDots from '../components/LoadingDots';
 import { FaExclamationCircle } from 'react-icons/fa';
-const MAIN_ENDPOINT = import.meta.env.VITE_MAIN_ENDPOINT;
 
 const allOccupations = [
   'Doctor', 'Nurse', 'Engineer', 'Teacher', 'Software Developer',
@@ -280,7 +279,6 @@ const TransformedImages = () => {
     }
   };
 
-
   return (
     <div className="transformed-wrapper">
       <Header />
@@ -292,9 +290,9 @@ const TransformedImages = () => {
               <label className="filter-title">Model</label>
               <div className="radio-options">
                 {[
-                  { name: 'InstructPix2Pix', time: '~1.5 min per image' },
+                  { name: 'InstructPix2Pix', time: '~3s per image' },
                   { name: 'Img2Img', time: '~3 min per image' },
-                  { name: 'MagicBrush', time: '~1.5 min per image' }
+                  { name: 'MagicBrush', time: '~3s per image' }
                 ].map(({ name, time }) => (
                   <label key={name} className="model-option">
                     <input
