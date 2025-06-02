@@ -1,39 +1,39 @@
 .results-container {
-  max-width: 900px;
-  margin: 8px auto 20px auto; 
-  padding: 0 24px;
+  max-width: 1500px;
+  margin: 20px auto 30px auto; 
+  padding: 0 18px;
 }
 
 .results-card {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   padding: 24px;
 }
 
 .results-header {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  color: #1f2937;
+  color: #000;
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .results-description {
   font-size: 14px;
-  color: #4b5563;
+  color: #333;
   line-height: 1.6;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .results-levels {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  background-color: #f9fafb;
-  padding: 16px;
+  background-color: #fafafa; 
+  padding: 12px;
   border-radius: 8px;
   text-align: left;
 }
@@ -41,38 +41,52 @@
 .bias-level {
   flex: 1;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: center; 
+  gap: 6px;
   font-size: 14px;
-  color: #000000; /* Base color for "Low Bias", "Medium Bias", "High Bias" */
+  color: #000;
+  line-height: 1.2;
 }
 
 .bias-low .icon {
-  color: #16a34a; /* vivid green */
+  color: #16a34a; 
 }
 
 .bias-low strong {
-  color: #15803d; /* bold green */
+  color: #15803d; 
 }
 
 .bias-med .icon {
-  color: #facc15; /* vivid yellow */
+  color: #f4c430;
+
 }
 
 .bias-med strong {
-  color: #92400e; /* brownish-yellow */
+  color: #f59e0b;
 }
 
 .bias-high .icon {
-  color: #ef4444; /* vivid red */
+  color: #ef4444; 
 }
 
 .bias-high strong {
-  color: #b91c1c; /* bold red */
+  color: #b91c1c; 
 }
 
 .icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+  position: relative;
   flex-shrink: 0;
+}
+
+.results-why {
+  font-size: 14px;
+  color: #333; 
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+.results-why-strong {
+  color: #333; 
 }

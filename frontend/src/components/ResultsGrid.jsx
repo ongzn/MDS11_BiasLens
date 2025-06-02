@@ -69,18 +69,17 @@ const ResultsGrid = ({ data }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-0 pb-6">
-      <div className="flex items-center gap-2 mb-8">
-  <h2 className="text-3xl font-bold text-gray-800">Detailed Analysis by Occupation</h2>
-  <Tooltip content="Each pair of images shows the original and AI-transformed version, organized by occupation. Hover over the metrics to explore detailed changes and bias scores for each individual." />
-</div>
-
+      <div className="flex items-center gap-2 mb-4 pt-4">
+        <h2 className="text-2xl font-bold text-black-800">Detailed Analysis by Occupation</h2>
+        <Tooltip content="Each pair of images shows the original and AI-transformed version, organized by occupation. Hover over the metrics to explore detailed changes and bias scores for each individual." />
+      </div>
 
       {Object.entries(groupedResults).map(([occupation, pairs]) => {
         const scrollRef = useRef(null);
 
         return (
-          <div key={occupation} className="mb-10">
-            <h3 className="text-2xl font-semibold text-gray-700 mb-4">{occupation}</h3>
+          <div key={occupation} className="mb-6">
+            <h3 className="text-lg font-semibold text-black-700 mb-4">{occupation}</h3>
             {pairs.length > 2 && (
               <div className="flex justify-end gap-2 -mt-14 mb-2">
                 <button
@@ -108,8 +107,7 @@ const ResultsGrid = ({ data }) => {
               {pairs.map((result, index) => (
                 <motion.div
                   key={index}
-                  className="min-w-[350px] h-[520px] flex-shrink-0"
-                  initial={{ opacity: 0, y: 20 }}
+                  className="min-w-[350px] h-[520px] flex-shrink-0 bg-transparent"
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >

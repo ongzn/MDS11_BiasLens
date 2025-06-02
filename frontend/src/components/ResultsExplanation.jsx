@@ -60,14 +60,15 @@ const ResultsExplanation = () => {
               </div>
             </motion.div>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.4 }}
-              className="text-gray-600 leading-relaxed mt-6"
-            >
-              <strong>Why it matters:</strong> Large shifts in how the AI sees gender, age, or skin tone suggest potential bias. For example, if a single individual’s appearance is altered more when labeled "Doctor" versus "Nurse," that could indicate the model associates certain demographics with certain jobs. Use these insights to understand and mitigate unfair stereotypes in AI imagery.
-            </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.4 }}
+            className="results-why"
+          >
+            <strong className="results-why-strong">Why it matters: </strong>
+            Large shifts in how the AI sees gender, age, or skin tone suggest potential bias. For example, if a single individual’s appearance is altered more when labeled "Doctor" versus "Nurse," that could indicate the model associates certain demographics with certain jobs. Use these insights to understand and mitigate unfair stereotypes in AI imagery.
+          </motion.p>
           </div>
         </div>
       </motion.div>

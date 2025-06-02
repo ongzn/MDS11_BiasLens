@@ -50,7 +50,7 @@ const BiasPieChart = ({ data }) => {
 
   return (
     <motion.div
-      className="rounded-lg shadow-md bg-white px-8 py-6 w-full"
+      className="rounded-lg bg-white shadow-[0_6px_24px_rgba(0,0,0,0.15)] px-6 pt-6 pb-6 w-full"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}

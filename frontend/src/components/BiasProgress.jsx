@@ -25,7 +25,7 @@ const BiasProgress = ({ data }) => {
 
   return (
     <div className="max-w-3xl mx-auto px-6 mt-8 mb-12">
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-[0_6px_24px_rgba(0,0,0,0.15)] p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <h3 className="text-xl font-semibold text-gray-800">Overall Bias Level</h3>

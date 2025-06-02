@@ -11,19 +11,19 @@ const Landing = () => {
       <Header />
       
       {/* Announcement Banner */}
-      <div className="landing-announcement">
-          ⚠️ Our APIs have been downgraded and may run slowly or become unavailable.
-          If you encounter any issues, consider cloning our{' '}
-          <a
-            href="https://github.com/ongzn/MDS11_BiasLens.git"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="announcement-link"
-          >
-            GitHub
-          </a>{' '}
-          repository and running the app locally.
-        </div>
+      {/* <div className="landing-announcement">
+        ⚠️ Our APIs have been downgraded and may run slowly or become unavailable.
+        If you encounter any issues, consider cloning our{' '}
+        <a
+          href="https://github.com/ongzn/MDS11_BiasLens.git"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="announcement-link"
+        >
+          GitHub
+        </a>{' '}
+        repository and running the app locally.
+      </div> */}
 
       <div className="landing-body">
         <div className="landing-title">Welcome to BiasLens</div>

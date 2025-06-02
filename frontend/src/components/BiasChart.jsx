@@ -6,8 +6,8 @@ import BarChart from './charts/BarChart';
 import Tooltip from './Tooltip';
 
 const BiasChart = ({ data }) => {
-  const [chartType, setChartType] = useState('dumbbell'); // 'bar' or 'dumbbell'
-  const [filter, setFilter] = useState('both'); // 'both', 'gender', 'age', 'race'
+  const [chartType, setChartType] = useState('dumbbell');
+  const [filter, setFilter] = useState('both');
 
   const handleChartChange = (type) => setChartType(type);
   const handleFilterChange = (e) => setFilter(e.target.value);
@@ -17,7 +17,7 @@ const BiasChart = ({ data }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-white rounded-lg shadow-md p-6 mb-8 space-y-8"
+      className="bg-white rounded-lg shadow-[0_6px_24px_rgba(0,0,0,0.15)] p-6 mb-8 space-y-8"
     >
       {/* Title + Tooltip */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">

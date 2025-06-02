@@ -100,7 +100,7 @@ const Result = () => {
         `Gender Bias,${data.bias_summary.gender_bias}`,
         `Race Bias,${data.bias_summary.race_bias}`,
         '',
-        '--- Begin Detailed Results ---',
+        'Detailed Results',
       ];
 
       const header = Object.keys(rows[0]);
@@ -167,7 +167,7 @@ const Result = () => {
     >
       <Header />
 
-      <div className="flex-1 max-w-7xl mx-auto px-6 pt-2 pb-10 w-full space-y-8">
+      <div className="flex-1 max-w-7xl mx-auto px-6 pt-2 pb-10 w-full space-y">
         <div className="button-row-bottom">
           <Button label="Back" onClick={() => setShowConfirmModal(true)} />
         </div>
@@ -178,7 +178,7 @@ const Result = () => {
         {/* Scrollable image/results grid */}
         <ResultsGrid data={data} />
 
-        {/* ✅ Failed image queue (moved below ResultsGrid) */}
+        {/* Failed image queue (moved below ResultsGrid) */}
         <BiasFailureQueue data={data} />
 
         {/* Combined distribution + pie */}

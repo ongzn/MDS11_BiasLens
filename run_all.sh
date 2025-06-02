@@ -46,9 +46,11 @@ echo "✅ mainEndpoint is ready."
 
 # Start frontend
 cd frontend
+rm -rf node_modules package-lock.json yarn.lock
 npm install
 npm install react react-dom react-icons
 npm install react-responsive-carousel
+chmod +x node_modules/.bin/vite
 npm run dev &
 
 echo "🎉 All services are up! Frontend is running."
