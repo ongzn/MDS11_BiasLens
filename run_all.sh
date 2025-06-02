@@ -9,7 +9,6 @@ export NODE_ENV=$MODE
 echo "🛠️ Running in $NODE_ENV mode..."
 
 echo "Starting all services..."
-pip install google-cloud-storage
 
 # Start editingModel
 cd editingModel
@@ -24,6 +23,7 @@ cd ..
 
 # Start mainEndpoint
 cd mainEndpoint
+pip install google-cloud-storage
 pip install -r requirements.txt
 npm install dotenv
 bash start.sh &
