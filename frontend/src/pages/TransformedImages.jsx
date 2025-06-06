@@ -1,3 +1,7 @@
+// TransformedImages.jsx
+// This component allows users to select a model and occupations, generate AI-transformed face images, and calculate bias analysis.
+// It supports real-time preview, progress tracking, and input validation using modal alerts.
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './TransformedImages.css';
@@ -9,13 +13,17 @@ import axios from 'axios';
 import { useGlobalContext } from '../context/GlobalContext';
 import LoadingDots from '../components/LoadingDots';
 import { FaExclamationCircle } from 'react-icons/fa';
+
+// Backend endpoint for transformation and analysis
 const MAIN_ENDPOINT = import.meta.env.VITE_MAIN_ENDPOINT;
+
+// Available occupations
 const allOccupations = [
   'Doctor', 'Nurse', 'Engineer', 'Teacher', 'Software Developer',
   'Scientist', 'Police Officer', 'Firefighter', 'Soldier', 'Pilot',
   'Flight Attendant', 'Construction Worker', 'Mechanic', 'Chef', 'Artist',
-   'Judge', 'Lawyer', 'Cashier', 'Receptionist', 'Secretary', 'Housekeeper',
-    'Janitor', 'Preschool Teacher', 'Social Worker', 'Pharmacist'
+  'Judge', 'Lawyer', 'Cashier', 'Receptionist', 'Secretary', 'Housekeeper',
+  'Janitor', 'Preschool Teacher', 'Social Worker', 'Pharmacist'
 ];
 
 const TransformedImages = () => {
@@ -30,6 +38,7 @@ const TransformedImages = () => {
     mode,
   } = useGlobalContext();
 
+  // Local state for current selections and UI state
   const [localModel, setLocalModel] = useState(globalModel);
   const [localOccupations, setLocalOccupations] = useState(globalOccupations);
   const [localTransformed, setLocalTransformed] = useState({});
@@ -42,8 +51,8 @@ const TransformedImages = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalType, setModalType] = useState('alert');
-  // const [customOccupation, setCustomOccupation] = useState('');
 
+  // Navigate back if no original images are found, or restore saved transformed images
   useEffect(() => {
     if (!originalImages || originalImages.length === 0) {
       navigate('/original');
@@ -64,7 +73,7 @@ const TransformedImages = () => {
     }
   }, [originalImages, transformedImages]);
 
-
+  // Open modal with custom message and type
   const openModal = (msg, type = 'alert') => {
     setModalMessage(msg);
     setModalType(type);
@@ -76,6 +85,7 @@ const TransformedImages = () => {
     setModalMessage('');
   };
 
+  // Toggle occupation selection, with max of 3
   const toggleOccupation = (occ) => {
     const isSelected = localOccupations.includes(occ);
     if (!isSelected && localOccupations.length >= 3) {
@@ -87,19 +97,7 @@ const TransformedImages = () => {
     );
   };
 
-  // const handleAddCustomOccupation = () => {
-  //   const trimmed = customOccupation.trim();
-  //   if (!trimmed) return;
-  //   if (localOccupations.includes(trimmed)) return openModal('This occupation is already selected.');
-  //   if (localOccupations.length >= 5) return openModal('You can only select up to 5 occupations.');
-  //   setLocalOccupations(prev => [...prev, trimmed]);
-  //   setCustomOccupation('');
-  // };
-
-  // const handleRemoveOccupation = (occ) => {
-  //   setLocalOccupations(prev => prev.filter(o => o !== occ));
-  // };
-
+  // Map selected model to API endpoint
   const getModelApiUrl = (model) => {
     const endpoints = {
       'InstructPix2Pix': `${MAIN_ENDPOINT}/transform-image`,
@@ -109,7 +107,7 @@ const TransformedImages = () => {
     return endpoints[model] || null;
   };
 
-
+  // Main button handler for image generation
   const handleGenerate = () => {
     if (!localModel) return openModal('Please select a model.');
     if (localOccupations.length === 0) return openModal('Please select at least one occupation.');
@@ -120,6 +118,7 @@ const TransformedImages = () => {
     }
   };
 
+  // Main generation logic: loops over images for each occupation
   const executeGenerate = async () => {
     setIsGenerating(true);
     setHasGenerated(true);
@@ -127,10 +126,8 @@ const TransformedImages = () => {
     setSelectedOccupations(localOccupations);
     setOccupations(localOccupations);
     setGeneratedOccupations(localOccupations);
-    // Clear previous images
     setLocalTransformed({});
 
-    // Now apply fresh placeholders
     const placeholder = {};
     const progressInit = {};
     localOccupations.forEach(o => progressInit[o] = 0);
@@ -146,7 +143,6 @@ const TransformedImages = () => {
     setLocalTransformed(placeholder);
     setProgress(progressInit);
 
-    // ✅ Phase 2: Begin actual generation
     const apiUrl = getModelApiUrl(localModel);
     const transformedResult = {};
 
@@ -159,11 +155,9 @@ const TransformedImages = () => {
           const res = await axios.post(apiUrl, {
             occupation: occ,
             images: { name: img.name, url: img.url }
-          },
-          {
-            timeout: 15000000000  
-          }
-        );
+          }, {
+            timeout: 15000000000
+          });
 
           const transformedUrl = res.data.transform.images.base64
             ? `data:image/png;base64,${res.data.transform.images.base64}`
@@ -181,29 +175,19 @@ const TransformedImages = () => {
 
           setLocalTransformed(prev => {
             const index = prev[occ].findIndex(item => item.original === img.url);
-            if (index === -1) return prev; // fallback
-
+            if (index === -1) return prev;
             const updated = [...prev[occ]];
             updated[index] = newImg;
-
-            return {
-              ...prev,
-              [occ]: updated
-            };
+            return { ...prev, [occ]: updated };
           });
 
-          setProgress(prev => ({
-            ...prev,
-            [occ]: prev[occ] + 1
-          }));
-
+          setProgress(prev => ({ ...prev, [occ]: prev[occ] + 1 }));
         } catch (err) {
           console.error(`❌ Failed to transform image ${img.name} for ${occ}`, err);
 
           const failedTransformed = {};
           const failedProgress = {};
 
-          // 🔴 Mark ALL occupations as failed
           for (const o of localOccupations) {
             failedTransformed[o] = originalImages.map((img, idx) => ({
               occupation: o,
@@ -230,6 +214,7 @@ const TransformedImages = () => {
     setIsGenerating(false);
   };
 
+  // Trigger bias analysis API once images are transformed
   const handleCalculate = async () => {
     if (!hasGenerated || generatedOccupations.length === 0) {
       return openModal('Please generate transformed images before calculating.');
@@ -257,14 +242,14 @@ const TransformedImages = () => {
       occupation: generatedOccupations,
       originals: originalImages.map(img => ({ name: img.name, url: img.url })),
       transform: generatedOccupations.map(occ => ({
-      occupation: occ,
-      images: (localTransformed[occ] || [])
-        .filter(img => img.transformed)  
-        .map(img => ({
-          original: img.original.split('/').pop().split('?')[0],
-          url: img.transformed
-        }))
-    }))
+        occupation: occ,
+        images: (localTransformed[occ] || [])
+          .filter(img => img.transformed)
+          .map(img => ({
+            original: img.original.split('/').pop().split('?')[0],
+            url: img.transformed
+          }))
+      }))
     };
 
     try {
@@ -281,15 +266,18 @@ const TransformedImages = () => {
 
   return (
     <div className="transformed-wrapper">
+      {/* Top header bar */}
       <Header />
 
+      {/* Model and occupation filter panel */}
       <div className="filter-panel-1">
         <div className="filter-inner">
           <div className="filter-options-group">
+            {/* Model selection area */}
             <div className="model-group">
               <label className="filter-title">Model</label>
               <div className="radio-options">
-                {[
+                {[ // Predefined image generation models
                   { name: 'InstructPix2Pix', time: '~1.5 min per image' },
                   { name: 'Img2Img', time: '~3 min per image' },
                   { name: 'MagicBrush', time: '~3.5 min per image' }
@@ -303,11 +291,12 @@ const TransformedImages = () => {
                       onChange={(e) => {
                         const selected = e.target.value;
                         setLocalModel(selected);
+                        // Show warning for Img2Img which is experimental
                         if (selected === 'Img2Img') {
                           openModal('⚠️ Not recommended. Note that selected models are currently experimental and could suffer from performance issues.', 'alert');
                         }
                       }}
-                      disabled={isGenerating}
+                      disabled={isGenerating} // Disable during generation
                     />
                     <span className="model-label">{name} <span className="model-time">({time})</span></span>
                   </label>
@@ -315,22 +304,24 @@ const TransformedImages = () => {
               </div>
             </div>
 
+            {/* Occupation checkbox selector (max 3 allowed) */}
             <div className="checkbox-group">
               <label className="filter-title">Occupation (Max:3)</label>
               <div className="checkbox-grid">
-               {allOccupations.map((occ) => (
-                <label key={occ} className="checkbox-option">
-                  <input
-                    type="checkbox"
-                    checked={localOccupations.includes(occ)}
-                    onChange={() => toggleOccupation(occ)}
-                    disabled={isGenerating || (!localOccupations.includes(occ) && localOccupations.length >= 3)}
-                  />
-                  {occ}
-                </label>
-              ))}
+                {allOccupations.map((occ) => (
+                  <label key={occ} className="checkbox-option">
+                    <input
+                      type="checkbox"
+                      checked={localOccupations.includes(occ)}
+                      onChange={() => toggleOccupation(occ)}
+                      disabled={isGenerating || (!localOccupations.includes(occ) && localOccupations.length >= 3)}
+                    />
+                    {occ}
+                  </label>
+                ))}
               </div>
 
+              {/* Optional custom occupation input (commented out) */}
               {/* {mode === 'custom' && (
                 <div className="custom-occupation-input">
                   <input
@@ -351,6 +342,7 @@ const TransformedImages = () => {
                 </div>
               )} */}
 
+              {/* Optional occupation removal pills (commented out) */}
               {/* {mode === 'custom' && localOccupations.length > 0 && (
                 <div className="selected-occupations-pill-row">
                   {localOccupations.map((occ) => (
@@ -370,15 +362,18 @@ const TransformedImages = () => {
             </div>
           </div>
 
+          {/* Generate button aligned right */}
           <div className="button-wrapper-right">
             <Button label="Generate" onClick={handleGenerate} disabled={isGenerating || isCalculating} />
           </div>
         </div>
       </div>
 
+      {/* Output section: either preview of generated images or no selection message */}
       <div className="output-box">
-        {hasGenerated? (
+        {hasGenerated ? (
           <div className="preview-box">
+            {/* Summary of demographic filters if in default mode */}
             {mode === 'default' && attributes && (
               <div className="summary-text">
                 <p>
@@ -390,6 +385,7 @@ const TransformedImages = () => {
               </div>
             )}
 
+            {/* Display each occupation section with transformed image results */}
             {generatedOccupations.map(occ => (
               <div key={occ} className="occupation-section">
                 <p className="occupation-title">
@@ -400,7 +396,7 @@ const TransformedImages = () => {
                     </span>
                   )}
                 </p>
-               <div className="images-grid">
+                <div className="images-grid">
                   {(localTransformed[occ] || []).map((img, i) => (
                     <ImageBox
                       key={img.key || i}
@@ -419,16 +415,19 @@ const TransformedImages = () => {
           <p className="no-selection">No occupation selected.</p>
         )}
 
+        {/* Bottom navigation buttons */}
         <div className="button-row-bottom">
           <Button label="Back" onClick={() => navigate('/original')} disabled={isGenerating || isCalculating} />
           <Button label="Calculate" onClick={handleCalculate} disabled={isGenerating || isCalculating} />
         </div>
       </div>
 
+      {/* Modal for alerts and warnings */}
       {showModal && (
         <Modal type={modalType} message={modalMessage} onClose={closeModal} />
       )}
 
+      {/* Confirmation modal before overwriting transformations */}
       {showConfirmReset && (
         <Modal
           type="confirm"
@@ -441,7 +440,7 @@ const TransformedImages = () => {
         />
       )}
 
-
+      {/* Optional: overlay during image generation or bias analysis (commented out) */}
       {/* {(isCalculating || isGenerating) && (
         <div className="generating-overlay">
           <div className="message">
@@ -459,6 +458,8 @@ const TransformedImages = () => {
           </div>
         </div>
       )} */}
+
+      {/* Bias analysis overlay */}
       {isCalculating && (
         <div className="generating-overlay">
           <div className="message">
@@ -468,6 +469,4 @@ const TransformedImages = () => {
       )}
     </div>
   );
-};
-
-export default TransformedImages;
+}

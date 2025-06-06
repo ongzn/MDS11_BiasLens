@@ -1,12 +1,13 @@
+/* ==== General Layout ==== */
 .transformed-wrapper {
   background-color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: white; 
   background-size: cover;
 }
 
+/* ==== Filter Panel (Top Controls) ==== */
 .filter-panel-1 {
   background-color: rgba(243, 243, 243, 0.5);
   border-bottom: 1px solid #ddd;
@@ -29,6 +30,7 @@
   width: 100%;
 }
 
+/* ==== Model Selection and Occupation Checkboxes ==== */
 .model-group {
   display: flex;
   flex-direction: column;
@@ -40,17 +42,18 @@
   width: 100%;
 }
 
-.button-wrapper-right {
-  display: flex;
-  justify-content: flex-end;
-  width: 160px;
-  align-self: flex-end;
-}
-
 .model-group .filter-title,
 .checkbox-group .filter-title {
-  margin-bottom: 8px; 
+  margin-bottom: 8px;
   display: inline-block;
+}
+
+.radio-options label,
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
 }
 
 .checkbox-grid {
@@ -58,7 +61,7 @@
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 4px 20px;
   width: 100%;
-  max-width: 1000px; 
+  max-width: 1000px;
   box-sizing: border-box;
 }
 
@@ -66,19 +69,20 @@
   font-size: 13px;
 }
 
-.checkbox-option,
-.radio-options label {
+/* ==== Button Wrapper ==== */
+.button-wrapper-right {
   display: flex;
-  align-items: center;
-  gap: 6px;              
-  font-size: 13px;   
+  justify-content: flex-end;
+  width: 160px;
+  align-self: flex-end;
 }
 
+/* ==== Output Section (Image Area) ==== */
 .output-box {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; 
+  justify-content: space-between;
 }
 
 .no-selection {
@@ -88,23 +92,11 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;    
+  align-items: center;
 }
 
 .preview-box {
   width: 100%;
-}
-
-.occupation-section {
-  width: 100%;
-}
-
-.occupation-title {
-  font-weight: bold;
-  font-size: 16px; 
-  margin-bottom: 10px;
-  padding-left: 20px;
-  text-align: left;
 }
 
 .summary-text {
@@ -113,21 +105,35 @@
   margin-bottom: 10px;
 }
 
+.occupation-section {
+  width: 100%;
+}
+
+.occupation-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  text-align: left;
+}
+
+/* ==== Image Grid ==== */
 .images-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;            
+  gap: 20px;
   justify-content: flex-start;
-  width: 100%;          
-  padding: 0 20px;       
+  width: 100%;
+  padding: 0 20px;
   box-sizing: border-box;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
 
 .images-grid > * {
-  flex: 0 0 180px;      
+  flex: 0 0 180px;
 }
 
+/* ==== Bottom Buttons (Fixed Position) ==== */
 .button-row-bottom {
   position: fixed;
   bottom: 20px;
@@ -139,12 +145,14 @@
   border-radius: 8px;
 }
 
+/* ==== Generation Status Text ==== */
 .generating-status {
   font-weight: normal;
   font-size: 14px;
   color: rgb(71, 71, 71);
 }
 
+/* ==== Loading Overlay During Generation/Analysis ==== */
 .generating-overlay {
   position: fixed;
   top: 0;
@@ -156,7 +164,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: all; 
+  pointer-events: all;
 }
 
 .generating-overlay .message {
@@ -165,10 +173,11 @@
   color: #333;
 }
 
+/* ==== Responsive Styles ==== */
 @media (max-width: 768px) {
   .filter-options-group {
     flex-direction: column;
-    gap: 20px; 
+    gap: 20px;
   }
 
   .model-group,
@@ -192,6 +201,7 @@
   }
 }
 
+/* ==== Optional Custom Occupation Input UI ==== */
 .custom-occupation-input {
   display: flex;
   gap: 8px;
@@ -205,6 +215,7 @@
   border-radius: 4px;
 }
 
+/* ==== Pills for Selected Custom Occupations ==== */
 .selected-occupations-pill-row {
   display: flex;
   flex-wrap: wrap;
@@ -236,6 +247,7 @@
   color: #aaa;
 }
 
+/* ==== Add Button State for Limit Reached ==== */
 .disabled-add-btn {
   background-color: #ccc !important;
   cursor: not-allowed;
@@ -243,6 +255,7 @@
   border: none;
 }
 
+/* ==== Model Option Display ==== */
 .model-option {
   display: flex;
   align-items: center;

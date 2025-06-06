@@ -1,3 +1,7 @@
+// OriginalImages.jsx
+// This component allows users to either upload face images (custom mode) or generate them by selecting demographic attributes (default mode).
+// It handles image compression, validation using FaceappClient() and navigation to the transformation step.
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,11 +13,15 @@ import ImageBox from '../components/ImageBox';
 import { useGlobalContext } from '../context/GlobalContext';
 import LoadingDots from '../components/LoadingDots';
 import { FaExclamationCircle, FaCheckCircle } from 'react-icons/fa';
+
+// API endpoints loaded from environment variables
 const MAIN_ENDPOINT = import.meta.env.VITE_MAIN_ENDPOINT;
 const BIAS_ANALYSIS_URL = import.meta.env.VITE_BIAS_ANALYSIS;
 
 const OriginalImages = () => {
   const navigate = useNavigate();
+
+  // Destructuring context values for global state management
   const {
     setAttributes, setOriginalImages,
     originalImages, attributes,
@@ -24,6 +32,7 @@ const OriginalImages = () => {
     verifiedUploads, setVerifiedUploads
   } = useGlobalContext();
 
+  // Local component states
   const [imageToDelete, setImageToDelete] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
@@ -38,9 +47,11 @@ const OriginalImages = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showRegenerateConfirm, setShowRegenerateConfirm] = useState(false);
 
+  // Refs
   const fileInputRef = useRef(null);
   const prevModeRef = useRef(mode);
 
+  // Reset state on mode switch
   useEffect(() => {
     if (prevModeRef.current !== mode) {
       setOriginalImages([]);
@@ -55,6 +66,7 @@ const OriginalImages = () => {
       prevModeRef.current = mode;
     }
 
+    // Auto-validation condition
     if (
       mode === 'custom' &&
       verifiedUploads.length > 0 &&
@@ -65,6 +77,7 @@ const OriginalImages = () => {
     }
   }, [mode]);
 
+  // Auto-update validation when image state changes
   useEffect(() => {
     if (
       mode === 'custom' &&
@@ -74,16 +87,18 @@ const OriginalImages = () => {
     ) {
       setIsValidated(true);
     } else {
-      setIsValidated(false); 
+      setIsValidated(false);
     }
   }, [verifiedUploads, unverifiedUploads, mode]);
 
+  // Automatically show summary once images are generated in default mode
   useEffect(() => {
     if (mode === 'default' && originalImages.length > 0) {
       setHasGenerated(true);
     }
   }, [originalImages, mode]);
 
+  // Same validation re-check to ensure updated state
   useEffect(() => {
     if (
       mode === 'custom' &&
@@ -95,16 +110,19 @@ const OriginalImages = () => {
     }
   }, [verifiedUploads, unverifiedUploads, mode]);
 
+  // Helper to format attribute label
   const formatLabel = (value) => ({
     Black: 'Black',
     EastAsian: 'East Asian',
     White: 'White'
   }[value] || value);
 
+  // Update form selection fields
   const updateSelection = (field, value) => {
     setSelections(prev => ({ ...prev, [field]: value }));
   };
 
+  // Compress uploaded image to JPEG with resolution and quality limits
   const compressImage = (file, maxSize = 600, quality = 0.7) => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -137,12 +155,15 @@ const OriginalImages = () => {
     });
   };
 
+  // Open hidden file input for uploading
   const openFileDialog = () => fileInputRef.current?.click();
 
+  // Handle uploaded image files
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
+    // Validate file types (JPEG, PNG, WebP only; no GIFs)
     const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
     const invalidFiles = files.filter(file => !validImageTypes.includes(file.type));
     const gifFiles = files.filter(file => file.type === 'image/gif');
@@ -157,6 +178,7 @@ const OriginalImages = () => {
       return;
     }
 
+    // Compress and store uploads as base64
     const uploads = await Promise.all(
       files.map(async file => ({
         name: file.name,
@@ -164,12 +186,14 @@ const OriginalImages = () => {
       }))
     );
 
+    // Update state with newly uploaded images
     setUnverifiedUploads(prev => [...uploads, ...prev]);
     setBase64Uploads(prev => [...uploads.map(u => ({ ...u })), ...prev]);
     setIsValidated(false);
     clearTransformedImages();
   };
 
+  // Confirm regeneration of a single image in default mode
   const confirmRegenerate = async () => {
     if (confirmIndex === null) return;
 
@@ -183,6 +207,7 @@ const OriginalImages = () => {
         replace: originalImages[confirmIndex]
       });
 
+      // Replace the selected image with the new one
       const updated = [...originalImages];
       updated[confirmIndex] = response.data.replacement;
       setOriginalImages(updated);
@@ -195,12 +220,15 @@ const OriginalImages = () => {
     }
   };
 
+  // Handle click on the Generate button
   const handleGenerate = async () => {
     if (mode === 'custom') {
+      // Ensure at least one uploaded image exists
       if (unverifiedUploads.length + verifiedUploads.length === 0) {
         setAlertMessage('Please upload at least one image.');
         return;
       }
+      // Set attributes to undefined (custom mode doesn't use them)
       setAttributes({ gender: 'undefined', age: 'undefined', race: 'undefined' });
       setOriginalImages([...verifiedUploads, ...unverifiedUploads]);
       setHasGenerated(true);
@@ -208,23 +236,27 @@ const OriginalImages = () => {
       return;
     }
 
+    // Ensure all attributes are selected
     if (!selections.gender || !selections.age || !selections.race) {
       setAlertMessage('Please select gender, age, and race.');
       return;
     }
 
+    // Warn user if regenerating after initial generation
     if (hasGenerated) {
       setShowRegenerateConfirm(true);
       return;
     }
 
-    await generateImages(); 
+    await generateImages();
   };
 
+  // Send request to backend to generate random face images
   const generateImages = async () => {
     try {
       setIsGenerating(true);
 
+      // Temporary loading placeholders
       const tempPlaceholders = Array.from({ length: pendingNumImages }, (_, i) => ({
         name: `loading-${i}`,
         url: '',
@@ -233,6 +265,7 @@ const OriginalImages = () => {
       setOriginalImages(tempPlaceholders);
       setHasGenerated(true);
 
+      // Request generated images from backend
       const response = await axios.post(`${MAIN_ENDPOINT}/get-random-images`, {
         ...selections,
         num: pendingNumImages
@@ -245,8 +278,9 @@ const OriginalImages = () => {
       clearTransformedImages();
     } catch (err) {
       console.error(err);
-        setAlertMessage('Failed to fetch images. Try again.');
-        const failedImages = Array.from({ length: pendingNumImages }, (_, i) => ({
+      setAlertMessage('Failed to fetch images. Try again.');
+      // Fallback if image generation fails
+      const failedImages = Array.from({ length: pendingNumImages }, (_, i) => ({
         name: `error-${i}`,
         url: '',
         isLoading: false,
@@ -258,8 +292,10 @@ const OriginalImages = () => {
     }
   };
 
+  // Navigate to the next step (transform page) after validation
   const handleNext = async () => {
     if (mode === 'default') {
+      // Ensure images were generated and are ready
       if (!originalImages || originalImages.length === 0 || originalImages.every(img => img.isLoading || !img.url)) {
         setAlertMessage('Please generate images before proceeding.');
         return;
@@ -269,15 +305,18 @@ const OriginalImages = () => {
       return;
     }
 
+    // For custom mode, combine verified and unverified uploads
     const combinedImages = [...verifiedUploads, ...unverifiedUploads];
     setOriginalImages(combinedImages);
     setAttributes({ gender: 'undefined', age: 'undefined', race: 'undefined' });
 
+    // Proceed if already validated
     if (isValidated) {
       navigate('/transformed');
       return;
     }
 
+    // Ensure at least one uploaded image exists
     if (unverifiedUploads.length === 0) {
       setAlertMessage('Please upload at least one image before continuing.');
       setIsValidated(false);
@@ -286,26 +325,32 @@ const OriginalImages = () => {
 
     try {
       setIsValidating(true);
+
+      // Upload and validate images
       const uploadRes = await axios.post(`${MAIN_ENDPOINT}/upload-images`, {
         images: unverifiedUploads.map(img => ({ base64: img.url }))
       });
 
       const finalImages = uploadRes.data.uploaded;
+
       const checkRes = await axios.post(`${BIAS_ANALYSIS_URL}/check_faces`, {
         images: finalImages
       });
 
+      // Merge validation results
       const verified = checkRes.data.map(img => ({
         name: img.name,
         url: finalImages.find(f => f.name === img.name)?.url || '',
         has_face: img.has_face
       }));
 
+      // Update state with verified images
       setVerifiedUploads(prev => [...prev, ...verified]);
       setUnverifiedUploads([]);
       setBase64Uploads([]);
       setOriginalImages([...verifiedUploads, ...verified]);
 
+      // Check if any images failed face detection
       const hasInvalid = verified.some(img => !img.has_face);
 
       if (hasInvalid) {
@@ -322,7 +367,6 @@ const OriginalImages = () => {
     }
   };
 
-  // ==== Render ====
   const allUploads = mode === 'default'
     ? originalImages
     : [...verifiedUploads, ...unverifiedUploads];
@@ -331,10 +375,12 @@ const OriginalImages = () => {
     <div className="original-wrapper">
       <Header mode={mode} setMode={setMode} />
 
+      {/* Filter Panel for Default Mode */}
       {mode === 'default' && (
         <div className="filter-panel">
           <div className="filter-inner">
             <div className="filter-options-group">
+              {/* Gender, Age, Race selectors */}
               {['gender', 'age', 'race'].map(field => {
                 const opts = field === 'gender'
                   ? ['Female', 'Male']
@@ -359,6 +405,8 @@ const OriginalImages = () => {
                   </div>
                 );
               })}
+
+              {/* Image Count Slider */}
               <div className="filter-group slider-group">
                 <label className="filter-title">Number of images per prompt</label>
                 <div className="slider-wrapper">
@@ -377,6 +425,7 @@ const OriginalImages = () => {
                 </div>
               </div>
             </div>
+
             <div className="button-wrapper-right">
               <Button label="Generate" onClick={handleGenerate} disabled={isGenerating} />
             </div>
@@ -384,14 +433,18 @@ const OriginalImages = () => {
         </div>
       )}
 
+      {/* Image Preview Box */}
       <div className="output-box">
         <div className="preview-box">
+
+          {/* Summary Text */}
           {hasGenerated && mode === 'default' && (
             <div className="summary-text">
               <p>{pendingNumImages} Images of {formatLabel(selections.race)} {selections.gender} aged {selections.age}</p>
             </div>
           )}
 
+          {/* Image Grid */}
           <div className="images-grid">
             {allUploads.map((img, i) => {
               let icon = null;
@@ -404,12 +457,10 @@ const OriginalImages = () => {
                 <ImageBox
                   key={i}
                   imageUrl={img.url}
-                  icon={
-                    img.failed ? (
-                      <FaExclamationCircle color="red" title="Failed to load" size={24} />
-                    ) : icon
-                  }
-                  isLoading={img.isLoading || loadingIndex === i} 
+                  icon={img.failed ? (
+                    <FaExclamationCircle color="red" title="Failed to load" size={24} />
+                  ) : icon}
+                  isLoading={img.isLoading || loadingIndex === i}
                   onClick={() => {
                     if (mode === 'default') {
                       setConfirmIndex(i);
@@ -421,11 +472,13 @@ const OriginalImages = () => {
                 />
               );
             })}
+            {/* Upload Button Slot (Custom Mode) */}
             {mode === 'custom' && allUploads.length < 5 && (
               <ImageBox isUploadButton onClick={openFileDialog} />
             )}
           </div>
 
+          {/* Hint and Validation/Generation Status */}
           {allUploads.length > 0 && (
             <p className="regenerate-hint">
               *Click on image to {mode === 'default' ? 'regenerate' : 'remove uploaded image'}
@@ -442,6 +495,7 @@ const OriginalImages = () => {
             <p className="no-selection">No attributes selected.</p>
           )}
 
+          {/* Hidden Upload Input */}
           <input
             type="file"
             multiple
@@ -452,12 +506,14 @@ const OriginalImages = () => {
           />
         </div>
 
+        {/* Navigation Buttons */}
         <div className="button-row-bottom">
-          <Button label="Back" onClick={() => navigate('/')} disabled={isGenerating}/>
-          <Button label={mode === 'custom' && !isValidated ? 'Validate' : 'Next'} onClick={handleNext} disabled={isGenerating}/>
+          <Button label="Back" onClick={() => navigate('/')} disabled={isGenerating} />
+          <Button label={mode === 'custom' && !isValidated ? 'Validate' : 'Next'} onClick={handleNext} disabled={isGenerating} />
         </div>
       </div>
 
+      {/* Delete Image Confirmation Modal */}
       {showDeleteConfirm && (
         <Modal
           type="confirm"
@@ -487,6 +543,7 @@ const OriginalImages = () => {
         />
       )}
 
+      {/* Regeneration Warning Modal */}
       {showRegenerateConfirm && (
         <Modal
           type="confirm"
@@ -499,6 +556,7 @@ const OriginalImages = () => {
         />
       )}
 
+      {/* Alert Modal */}
       {alertMessage && (
         <Modal type="alert" message={alertMessage} onClose={() => setAlertMessage(null)} />
       )}

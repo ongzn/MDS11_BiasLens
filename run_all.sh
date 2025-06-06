@@ -18,6 +18,7 @@ cd ..
 
 # Start biasAnalyse without Docker
 cd biasAnalyse
+pip install google-cloud-storage
 bash start.sh &
 cd ..
 

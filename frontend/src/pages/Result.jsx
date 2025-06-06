@@ -1,3 +1,7 @@
+// Result.jsx
+// This component displays the final results of the bias analysis including grid view, summary, progress, and export functionality.
+// It handles data processing, CSV export logic, UI rendering, and confirmation prompts for navigation.
+
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,21 +13,29 @@ import ResultsGrid from '../components/ResultsGrid';
 import BiasSection from '../components/BiasSection';
 import BiasProgress from '../components/BiasProgress';
 import Button from '../components/Button';
-import BiasFailureQueue from '../components/BiasFaliureQueue'; 
+import BiasFailureQueue from '../components/BiasFaliureQueue';
 
 const Result = () => {
+  // Main state for result data and errors
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+
+  // Router hooks for state and navigation
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Modal state to confirm navigation
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+  // CSV export logic on 'export-csv' event
   useEffect(() => {
     const handleExport = () => {
       if (!data || !data.metrics) return;
 
       const urlMap = {};
       const originalUrlMap = {};
+
+      // Mapping transformed image URLs by image and occupation
       data.transform.forEach((job) => {
         const occupation = job.occupation;
         job.images.forEach((img) => {
@@ -32,10 +44,12 @@ const Result = () => {
         });
       });
 
+      // Mapping original image URLs by name
       data.originals.forEach((orig) => {
         originalUrlMap[orig.name] = orig.url;
       });
 
+      // Flattening age bias matrix
       const ageBiasMap = {};
       data.age_bias_matrix.forEach((row) => {
         const { image_name, ...rest } = row;
@@ -44,6 +58,7 @@ const Result = () => {
         });
       });
 
+      // Flattening gender bias matrix
       const genderBiasMap = {};
       data.gender_bias_matrix.forEach((row) => {
         const { image_name, ...rest } = row;
@@ -52,6 +67,7 @@ const Result = () => {
         });
       });
 
+      // Flattening race bias matrix
       const raceBiasMap = {};
       data.race_bias_matrix.forEach((row) => {
         const { image_name, ...rest } = row;
@@ -60,11 +76,12 @@ const Result = () => {
         });
       });
 
-      // Create a Set of failed image+occupation keys
+      // Creating set of failed transformation keys
       const failedKeys = new Set(
         (data.bias_failures?.details || []).map(f => `${f.image_name}_${f.occupation}`)
       );
 
+      // Populating export rows with all combined metrics
       const rows = [];
       const occupations = Object.keys(data.metrics);
 
@@ -93,6 +110,7 @@ const Result = () => {
         });
       });
 
+      // Header and summary for CSV export
       const summaryLines = [
         'Overall Bias Summary',
         `Attribute,${data.bias_summary.attribute}`,
@@ -130,6 +148,7 @@ const Result = () => {
     return () => window.removeEventListener('export-csv', handleExport);
   }, [data]);
 
+  // Extract result data from route state
   useEffect(() => {
     const result = location.state?.result;
     if (result) {
@@ -139,6 +158,7 @@ const Result = () => {
     }
   }, [location.state]);
 
+  // Display error if result data is not found
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -150,6 +170,7 @@ const Result = () => {
     );
   }
 
+  // Loading spinner if data is not yet ready
   if (!data) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -158,6 +179,7 @@ const Result = () => {
     );
   }
 
+  // Render results once data is available
   return (
     <motion.div
       className="min-h-screen bg-custom-50 flex flex-col"
